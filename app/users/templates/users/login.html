@@ -1,0 +1,59 @@
+{% extends 'users/base.html' %}
+{% load i18n %}
+{% if captcha %}
+  {% load recaptcha2 %}
+  {% block head %}
+    {% recaptcha_init %}
+  {% endblock %}
+{% endif %}
+{% block content %}
+  <div class="col-lg-4 col-md-6 col-sm-8 ml-auto mr-auto">
+    <form class="form" method="post" action="{% url 'user-login' %}">
+      {% csrf_token %}
+      <div class="card card-login card-hidden">
+        <div class="card-header card-header-primary text-center">
+          <h4 class="card-title">{% trans 'USERS_LOGIN_CARD_TITLE' %}</h4>
+        </div>
+        <div class="card-body">
+          {% for k, v in form.errors.items %}
+            <div class="alert alert-danger" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <i class="material-icons">close</i>
+              </button>
+              <span>{% if k != '__all__' %}{{ k }} - {% endif %}{{ v|striptags }}</span></div>
+          {% endfor %}
+          <div class="bmd-form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="material-icons">account_circle</i></span>
+              </div>
+              {{ form.username }}
+            </div>
+          </div>
+          <div class="bmd-form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="material-icons">lock_outline</i></span>
+              </div>
+              {{ form.password }}
+            </div>
+          </div>
+          {% if captcha %}
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-prepend ml-auto">
+                  {{ form.captcha }}
+                  <input type="hidden" class="hiddenRecaptcha" required name="hiddenRecaptcha" id="hiddenRecaptcha">
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+        <div class="card-footer justify-content-center">
+          <input type="submit" class="btn btn-primary btn-link btn-lg" value="{% trans 'USERS_LOGIN_CARD_SUBMIT' %}">
+        </div>
+      </div>
+      <input type="hidden" name="next" value="{{ request.GET.next }}" />
+    </form>
+  </div>
+{% endblock %}

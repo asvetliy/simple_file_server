@@ -1,0 +1,41 @@
+{% load static i18n %}
+<div class="sidebar" data-color="danger" data-background-color="black" data-image="{% static 'img/sidebar-1.jpg' %}">
+  <div class="logo">
+    <a href="{% url 'files-index' %}" class="simple-text logo-mini">
+      {% trans 'FILES_SIDEBAR_LOGO_MINI' %}
+    </a>
+    <a href="{% url 'files-index' %}" class="simple-text logo-normal">
+      {% trans 'FILES_SIDEBAR_LOGO_NORMAL' %}
+    </a>
+  </div>
+  <div class="sidebar-wrapper">
+    <div class="user">
+      <div class="photo">
+        <img src="{% static 'img/default-avatar.png' %}"/>
+      </div>
+      <div class="user-info">
+        <a data-toggle="collapse" href="#userInfoCollapse" class="username">
+          <span>{{ user.username }}<b class="caret"></b></span>
+        </a>
+        <div class="collapse {{ nav_profile_collapsed }}" id="userInfoCollapse">
+          <ul class="nav">
+            <li class="nav-item {{ nav_logout }}">
+              <a class="nav-link" href="{% url 'user-logout' %}">
+                <span class="sidebar-mini"> {% trans 'FILES_SIDEBAR_LOGOUT_MINI' %} </span>
+                <span class="sidebar-normal"> {% trans 'FILES_SIDEBAR_LOGOUT_NORMAL' %} </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <ul class="nav">
+      <li class="nav-item {{ nav_dashboard }}">
+        <a class="nav-link" href="{% url 'files-index' %}">
+          <i class="material-icons">dashboard</i>
+          <p> {% trans 'FILES_SIDEBAR_DASHBOARD' %} </p>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

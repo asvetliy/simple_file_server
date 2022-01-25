@@ -1,0 +1,216 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-01-25 19:56+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: app/settings/base.py:120
+msgid "English"
+msgstr ""
+
+#: files/templates/files/base.html:53
+msgid "FILES_NAVBAR_UPLOAD"
+msgstr "UPLOAD FILES"
+
+#: files/templates/files/base.html:93
+msgid "FILES_USERMENU_LOGOUT"
+msgstr "Logout"
+
+#: files/templates/files/base.html:123
+msgid "FILES_FOOTER_COMPANY_URL"
+msgstr "/"
+
+#: files/templates/files/base.html:123
+msgid "FILES_FOOTER_COMPANY_TEXT"
+msgstr "Simple File Server"
+
+#: files/templates/files/base.html:128
+msgid ""
+"\n"
+"            &copy;\n"
+"            <script>document.write(new Date().getFullYear().toString())</"
+"script>\n"
+"            <a href=\"/\" target=\"_blank\">SimpleFileServer</a> All Rights "
+"Reserved\n"
+"          "
+msgstr ""
+
+#: files/templates/files/blocks/sidebar.html:5
+msgid "FILES_SIDEBAR_LOGO_MINI"
+msgstr "SFS"
+
+#: files/templates/files/blocks/sidebar.html:8
+msgid "FILES_SIDEBAR_LOGO_NORMAL"
+msgstr "Simple File Server"
+
+#: files/templates/files/blocks/sidebar.html:24
+msgid "FILES_SIDEBAR_LOGOUT_MINI"
+msgstr "LO"
+
+#: files/templates/files/blocks/sidebar.html:25
+msgid "FILES_SIDEBAR_LOGOUT_NORMAL"
+msgstr "Logout"
+
+#: files/templates/files/blocks/sidebar.html:36
+msgid "FILES_SIDEBAR_DASHBOARD"
+msgstr "DASHBOARD"
+
+#: files/templates/files/index.html:36 files/templates/files/index.html:46
+msgid "FILES_TABLE_NAME"
+msgstr "File"
+
+#: files/templates/files/index.html:37 files/templates/files/index.html:47
+msgid "FILES_TABLE_SIZE"
+msgstr "Size"
+
+#: files/templates/files/index.html:38 files/templates/files/index.html:48
+msgid "FILES_TABLE_CREATEDAT"
+msgstr "Created At"
+
+#: files/templates/files/index.html:39 files/templates/files/index.html:49
+msgid "FILES_TABLE_ACTIONS"
+msgstr "Actions"
+
+#: files/templates/files/index.html:67
+msgid "FILES_UPLOADING_MODAL_TITLE"
+msgstr "Uploading Files"
+
+#: files/templates/files/index.html:79
+msgid "FILES_UPLOADING_MODAL_CLOSE"
+msgstr "Close"
+
+#: files/templates/files/index.html:122
+msgid "FILES_TABLE_SEARCH_RECORDS"
+msgstr "Search records..."
+
+#: files/templates/files/index.html:152
+msgid "FILES_LIST_TABLE_UPLOAD_SUCCESS"
+msgstr "Success"
+
+#: files/templates/files/index.html:159
+msgid "FILES_LIST_TABLE_UPLOAD_ERROR"
+msgstr "Error"
+
+#: files/validators.py:14
+#, python-format
+msgid "The maximum file size that can be uploaded is %d(max_file_size)MB"
+msgstr ""
+
+#: files/views.py:19
+msgid "FILES_VIEW_TITLE"
+msgstr "Simple File Server"
+
+#: users/admin.py:21
+msgid "Permissions"
+msgstr ""
+
+#: users/admin.py:26
+msgid "Important dates"
+msgstr ""
+
+#: users/forms.py:12
+msgid "USERS_LOGIN_FORM_USERNAME"
+msgstr "Username"
+
+#: users/forms.py:16
+msgid "USERS_LOGIN_FORM_PWD"
+msgstr "Password"
+
+#: users/models.py:51
+msgid "username"
+msgstr ""
+
+#: users/models.py:54
+msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+msgstr ""
+
+#: users/models.py:57
+msgid "A user with that username already exists."
+msgstr ""
+
+#: users/models.py:65
+msgid "staff status"
+msgstr ""
+
+#: users/models.py:67
+msgid "Designates whether the user can log into this admin site."
+msgstr ""
+
+#: users/models.py:70
+msgid "active"
+msgstr ""
+
+#: users/models.py:73
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
+msgstr ""
+
+#: users/models.py:77
+msgid "date joined"
+msgstr ""
+
+#: users/models.py:82
+msgid "user"
+msgstr ""
+
+#: users/models.py:83
+msgid "users"
+msgstr ""
+
+#: users/templates/users/base.html:12 users/templates/users/base_old.html:11
+msgid "USERS_BASE_TITLE"
+msgstr "Simple File Server"
+
+#: users/templates/users/base.html:31
+msgid "USERS_NAVBAR_COMPANY_NAME"
+msgstr "Simple File Server"
+
+#: users/templates/users/base.html:44
+msgid "USERS_NAVBAR_LOGIN"
+msgstr "Login"
+
+#: users/templates/users/base.html:63
+msgid ""
+"\n"
+"          &copy;\n"
+"          <script>document.write(new Date().getFullYear().toString())</"
+"script>\n"
+"          <a href=\"/\" target=\"_blank\">SimpleFileServer</a> All Rights "
+"Reserved\n"
+"          "
+msgstr ""
+
+#: users/templates/users/login.html:15 users/templates/users/login_old.html:14
+msgid "USERS_LOGIN_CARD_TITLE"
+msgstr "Login Form"
+
+#: users/templates/users/login.html:53 users/templates/users/login_old.html:48
+msgid "USERS_LOGIN_CARD_SUBMIT"
+msgstr "Login"
+
+#: users/templates/users/login_old.html:30
+msgid "USERS_LOGIN_CARD_LOGIN_LABEL"
+msgstr "Username"
+
+#: users/templates/users/login_old.html:34
+msgid "USERS_LOGIN_CARD_PASSWORD_LABEL"
+msgstr "Password"
+
+#: users/views.py:29
+msgid "USER_LOGIN_PAGE_TITLE"
+msgstr "Login Page"
