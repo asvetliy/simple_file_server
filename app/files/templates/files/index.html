@@ -101,7 +101,12 @@
               return '<div class="d-flex px-2 py-1"><div><span class="fiv-viv fiv-icon-' + row.old_file_name.split('.').slice(-1).pop() + '" style="width: 32px; height: 32px;"></span></div><div class="d-flex flex-column justify-content-center"><h6 class="mb-0 text-sm">' + row.old_file_name + '</h6></div></div>';
             },
           },
-          { "data": "file_size" },
+          {
+            "mData": "file_size",
+            "mRender": function (data, type, row) {
+              return '<span class="badge badge-success">' + row.file_size + '</span>';
+            }
+          },
           { "data": "created_at" },
           {
             "mRender": function (data, type, row) {
