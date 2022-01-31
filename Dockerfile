@@ -16,6 +16,5 @@ RUN mkdir /home/pyuser/app_data/public
 RUN mkdir /home/pyuser/app_data/media
 RUN python /home/pyuser/app/app/manage.py collectstatic --clear --noinput
 RUN python /home/pyuser/app/app/manage.py compilemessages -l en
-RUN python /home/pyuser/app/app/manage.py compilemessages -l ru
 
 CMD ["gunicorn", "app.wsgi"]
