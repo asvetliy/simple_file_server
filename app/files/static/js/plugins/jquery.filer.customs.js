@@ -20,9 +20,6 @@ let filer_options = {
 									<ul class="list-inline pull-left">\
 										<li>{{fi-progressBar}}</li>\
 									</ul>\
-									<ul class="list-inline pull-right">\
-										<li><a class="icon-jfi-trash jFiler-item-trash-action"></a></li>\
-									</ul>\
 								</div>\
 							</div>\
 						</div>\
@@ -46,9 +43,6 @@ let filer_options = {
 										<ul class="list-inline pull-left">\
 											<li><span class="jFiler-item-others">{{fi-icon}}</span></li>\
 										</ul>\
-										<ul class="list-inline pull-right">\
-											<li><a class="icon-jfi-trash jFiler-item-trash-action"></a></li>\
-										</ul>\
 									</div>\
 								</div>\
 							</div>\
@@ -56,12 +50,12 @@ let filer_options = {
     progressBar: '<div class="bar"></div>',
     itemAppendToEnd: false,
     canvasImage: true,
-    removeConfirmation: true,
+    removeConfirmation: false,
     _selectors: {
       list: '.jFiler-items-list',
       item: '.jFiler-item',
       progressBar: '.bar',
-      remove: '.jFiler-item-trash-action'
+      remove: null,
     }
   },
   captions: {

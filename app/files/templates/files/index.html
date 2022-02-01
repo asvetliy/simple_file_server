@@ -4,6 +4,7 @@
   <link href="{% static 'css/jquery.filer.css' %}" rel="stylesheet"/>
   <link href="{% static 'css/jquery.filer-dragdropbox-theme.css' %}" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/file-icon-vectors@1.0.0/dist/file-icon-vivid.min.css"/>
+  <link rel="stylesheet" href="{% static 'fonts/jquery.filer-icons/jquery-filer.css' %}">
   <script type="text/javascript" src="{% static 'js/core/jquery.min.js' %}"></script>
   <script type="text/javascript">
     let files_table = null;
@@ -147,8 +148,7 @@
           type: 'POST',
           enctype: 'multipart/form-data',
           synchron: false,
-          beforeSend: function () {
-          },
+          beforeSend: null,
           success: function (data, itemEl, listEl, boxEl, newInputEl, inputEl, id) {
             let parent = itemEl.find(".jFiler-jProgressBar").parent(), filerKit = inputEl.prop("jFiler");
             filerKit.files_list[id].name = data['name'];
@@ -179,11 +179,7 @@
         beforeSelect: null,
         onSelect: null,
         afterShow: null,
-        onRemove: function (itemEl, file, id, listEl, boxEl, newInputEl, inputEl) {
-          let filerKit = inputEl.prop("jFiler"),
-            file_id = filerKit.files_list[id].id;
-          delete_file(file_id);
-        },
+        onRemove: null,
         onEmpty: null,
         options: null,
         dialogs: {
