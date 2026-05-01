@@ -1,0 +1,39 @@
+{% load i18n %}
+<div id="auth-panel" class="rounded-box border border-base-300 bg-base-100/90 p-6 shadow-sm backdrop-blur">
+  <h1 class="text-2xl font-bold">{% trans 'Welcome back' %}</h1>
+  <p class="mt-2 text-sm text-base-content/70">{% trans 'Sign in to manage your files.' %}</p>
+
+  <form class="mt-6 space-y-4" method="post" action="{% url 'user-login' %}">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="alert alert-error">
+        <span>{{ form.non_field_errors|striptags }}</span>
+      </div>
+    {% endif %}
+
+    <label class="form-control">
+      <span class="label-text mb-1">{% trans 'Username' %}</span>
+      {{ form.username }}
+      {% if form.username.errors %}<span class="mt-1 text-sm text-error">{{ form.username.errors|striptags }}</span>{% endif %}
+    </label>
+    <label class="form-control">
+      <span class="label-text mb-1">{% trans 'Password' %}</span>
+      {{ form.password }}
+      {% if form.password.errors %}<span class="mt-1 text-sm text-error">{{ form.password.errors|striptags }}</span>{% endif %}
+    </label>
+
+    <input type="hidden" name="next" value="{{ request.GET.next }}">
+    <button class="btn btn-primary w-full shadow-sm" type="submit">{% trans 'Sign in' %}</button>
+  </form>
+
+  <p class="mt-6 text-center text-sm text-base-content/70">
+    {% trans 'Need an account?' %}
+    <a class="link link-primary"
+       href="{% url 'user-signup' %}"
+       hx-get="{% url 'user-signup' %}"
+       hx-target="#auth-panel"
+       hx-select="#auth-panel"
+       hx-swap="outerHTML"
+       hx-push-url="true">{% trans 'Create one' %}</a>
+  </p>
+</div>

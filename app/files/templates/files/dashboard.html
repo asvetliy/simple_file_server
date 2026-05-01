@@ -1,0 +1,129 @@
+{% extends 'files/base.html' %}
+{% load i18n simple_tags %}
+
+{% block content %}
+<section class="mx-auto flex max-w-7xl flex-col gap-6">
+  <div class="rounded-box border border-base-300 bg-base-100/90 p-6 shadow-sm backdrop-blur">
+    <p class="text-sm font-medium uppercase text-primary">{% trans 'Overview' %}</p>
+    <h1 class="mt-1 flex items-center gap-3 text-4xl font-bold tracking-tight">
+      <span class="grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/15">
+        <i data-lucide="layout-dashboard" class="h-6 w-6"></i>
+      </span>
+      {% trans 'Drive dashboard' %}
+    </h1>
+    <p class="mt-3 max-w-2xl text-base-content/70">
+      {% trans 'A quick look at what is stored in your private drive.' %}
+    </p>
+  </div>
+
+  <div class="grid gap-4 md:grid-cols-3">
+    <div class="stat rounded-box border border-base-300 bg-base-100/90 shadow-sm">
+      <div class="stat-figure text-primary">
+        <i data-lucide="file" class="h-7 w-7"></i>
+      </div>
+      <div class="stat-title">{% trans 'File Explorer' %}</div>
+      <div class="stat-value text-primary">{{ file_count }}</div>
+      <div class="stat-desc">{% trans 'Total uploaded files' %}</div>
+    </div>
+    <div class="stat rounded-box border border-base-300 bg-base-100/90 shadow-sm">
+      <div class="stat-figure text-warning">
+        <i data-lucide="folder" class="h-7 w-7"></i>
+      </div>
+      <div class="stat-title">{% trans 'Folders' %}</div>
+      <div class="stat-value">{{ folder_count }}</div>
+      <div class="stat-desc">{% trans 'Organized locations' %}</div>
+    </div>
+    <div class="stat rounded-box border border-base-300 bg-base-100/90 shadow-sm">
+      <div class="stat-figure text-secondary">
+        <i data-lucide="hard-drive" class="h-7 w-7"></i>
+      </div>
+      <div class="stat-title">{% trans 'Storage used' %}</div>
+      <div class="stat-value text-secondary">{{ total_size|human_bytes }}</div>
+      <div class="stat-desc">{% trans 'Across your drive' %}</div>
+    </div>
+  </div>
+
+  <div class="grid gap-4 lg:grid-cols-3">
+    <section class="rounded-box border border-base-300 bg-base-100/90 shadow-sm">
+      <div class="border-b border-base-300 p-5">
+        <h2 class="text-lg font-semibold">{% trans 'Recent files' %}</h2>
+      </div>
+      {% if recent_files %}
+        <div class="overflow-x-auto">
+          <table class="table">
+            <tbody>
+              {% for file in recent_files %}
+                <tr>
+                  <td>
+                    <p class="font-medium">{{ file.old_file_name }}</p>
+                    <p class="text-xs text-base-content/60">{{ file.created_at|date:"Y-m-d H:i" }}</p>
+                  </td>
+                  <td class="text-right">{{ file.file.size|human_bytes }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="p-8 text-center text-base-content/60">{% trans 'No uploads yet.' %}</div>
+      {% endif %}
+    </section>
+
+    <section class="rounded-box border border-base-300 bg-base-100/90 shadow-sm">
+      <div class="border-b border-base-300 p-5">
+        <h2 class="text-lg font-semibold">{% trans 'Recent folders' %}</h2>
+      </div>
+      {% if recent_folders %}
+        <div class="overflow-x-auto">
+          <table class="table">
+            <tbody>
+              {% for folder in recent_folders %}
+                <tr>
+                  <td>
+                    <p class="font-medium">{{ folder.name }}</p>
+                    <p class="text-xs text-base-content/60">{{ folder.created_at|date:"Y-m-d H:i" }}</p>
+                  </td>
+                  <td class="text-right">
+                    <a class="btn btn-sm btn-outline btn-primary" href="{% url 'files-index' %}?folder={{ folder.id }}">{% trans 'Open' %}</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="p-8 text-center text-base-content/60">{% trans 'No folders yet.' %}</div>
+      {% endif %}
+    </section>
+
+    <section class="rounded-box border border-base-300 bg-base-100/90 shadow-sm">
+      <div class="border-b border-base-300 p-5">
+        <h2 class="text-lg font-semibold">{% trans 'Largest files' %}</h2>
+      </div>
+      {% if largest_files %}
+        <div class="overflow-x-auto">
+          <table class="table">
+            <tbody>
+              {% for file in largest_files %}
+                <tr>
+                  <td>
+                    <p class="font-medium">{{ file.old_file_name }}</p>
+                    <p class="text-xs text-base-content/60">#{{ file.id }}</p>
+                  </td>
+                  <td class="text-right">{{ file.file.size|human_bytes }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="p-8 text-center text-base-content/60">{% trans 'No files to rank yet.' %}</div>
+      {% endif %}
+    </section>
+  </div>
+
+  <div>
+    <a href="{% url 'files-index' %}" class="btn btn-primary">{% trans 'Open files' %}</a>
+  </div>
+</section>
+{% endblock %}

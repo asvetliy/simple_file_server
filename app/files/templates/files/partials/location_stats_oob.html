@@ -1,0 +1,17 @@
+{% load i18n %}
+<div id="drive-location-stats" hx-swap-oob="true" class="stats stats-vertical border border-base-300 bg-base-200 shadow-none sm:stats-horizontal">
+  <div class="stat py-4">
+    <div class="stat-title flex items-center gap-2">
+      <i data-lucide="file" class="h-4 w-4"></i>
+      {% trans 'Stored files' %}
+    </div>
+    <div class="stat-value text-primary">{{ files|length }}</div>
+  </div>
+  <div class="stat py-4">
+    <div class="stat-title flex items-center gap-2">
+      <i data-lucide="folder" class="h-4 w-4"></i>
+      {% trans 'Folders' %}
+    </div>
+    <div class="stat-value">{{ folders|length }}</div>
+  </div>
+</div>

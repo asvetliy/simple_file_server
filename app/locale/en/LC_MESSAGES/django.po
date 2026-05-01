@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-25 19:56+0200\n"
+"POT-Creation-Date: 2023-01-12 02:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,9 +18,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: app/settings/base.py:120
+#: app/settings/base.py:119
 msgid "English"
 msgstr ""
+
+#: files/templates/404.html:67 files/templates/500.html:67
+#: users/templates/users/base.html:63
+msgid ""
+"\n"
+"          &copy;\n"
+"          <script>document.write(new Date().getFullYear().toString())</"
+"script>\n"
+"          <a href=\"/\" target=\"_blank\">SimpleFileServer</a> All Rights "
+"Reserved\n"
+"          "
+msgstr ""
+
+#: files/templates/files/base.html:7
+msgid "FILES_TITLE"
+msgstr "Simple File Server"
 
 #: files/templates/files/base.html:53
 msgid "FILES_NAVBAR_UPLOAD"
@@ -69,50 +85,85 @@ msgstr "Logout"
 msgid "FILES_SIDEBAR_DASHBOARD"
 msgstr "DASHBOARD"
 
-#: files/templates/files/index.html:36 files/templates/files/index.html:46
+#: files/templates/files/blocks/sidebar.html:42
+msgid "FILES_SIDEBAR_FILES"
+msgstr "CLOUD FILES"
+
+#: files/templates/files/blocks/sidebar.html:48
+msgid "FILES_SIDEBAR_TORRENTS_MANAGEMENT"
+msgstr "TORRENTS"
+
+#: files/templates/files/blocks/sidebar.html:56
+msgid "FILES_SIDEBAR_TORRENTS_MINI"
+msgstr "TRS"
+
+#: files/templates/files/blocks/sidebar.html:57
+msgid "FILES_SIDEBAR_TORRENTS_NORMAL"
+msgstr "TORRENTS"
+
+#: files/templates/files/blocks/sidebar.html:62
+msgid "FILES_SIDEBAR_TORRENTS_DOWNLOADS_MINI"
+msgstr "TRD"
+
+#: files/templates/files/blocks/sidebar.html:63
+msgid "FILES_SIDEBAR_TORRENTS_DOWNLOADS_NORMAL"
+msgstr "DOWNLOADS"
+
+#: files/templates/files/index.html:37 files/templates/files/index.html:47
 msgid "FILES_TABLE_NAME"
 msgstr "File"
 
-#: files/templates/files/index.html:37 files/templates/files/index.html:47
+#: files/templates/files/index.html:38 files/templates/files/index.html:48
 msgid "FILES_TABLE_SIZE"
 msgstr "Size"
 
-#: files/templates/files/index.html:38 files/templates/files/index.html:48
+#: files/templates/files/index.html:39 files/templates/files/index.html:49
 msgid "FILES_TABLE_CREATEDAT"
 msgstr "Created At"
 
-#: files/templates/files/index.html:39 files/templates/files/index.html:49
+#: files/templates/files/index.html:40 files/templates/files/index.html:50
 msgid "FILES_TABLE_ACTIONS"
 msgstr "Actions"
 
-#: files/templates/files/index.html:67
+#: files/templates/files/index.html:68
 msgid "FILES_UPLOADING_MODAL_TITLE"
 msgstr "Uploading Files"
 
-#: files/templates/files/index.html:79
+#: files/templates/files/index.html:80
 msgid "FILES_UPLOADING_MODAL_CLOSE"
 msgstr "Close"
 
-#: files/templates/files/index.html:122
+#: files/templates/files/index.html:128
 msgid "FILES_TABLE_SEARCH_RECORDS"
 msgstr "Search records..."
 
-#: files/templates/files/index.html:152
+#: files/templates/files/index.html:157
 msgid "FILES_LIST_TABLE_UPLOAD_SUCCESS"
 msgstr "Success"
 
-#: files/templates/files/index.html:159
+#: files/templates/files/index.html:164
 msgid "FILES_LIST_TABLE_UPLOAD_ERROR"
 msgstr "Error"
 
 #: files/validators.py:14
-#, python-format
 msgid "The maximum file size that can be uploaded is %d(max_file_size)MB"
 msgstr ""
 
 #: files/views.py:19
+msgid "FILES_DASHBOARD_VIEW_TITLE"
+msgstr "Dashboard"
+
+#: files/views.py:30
 msgid "FILES_VIEW_TITLE"
-msgstr "Simple File Server"
+msgstr "Cloud Files"
+
+#: torrents/views.py:10
+msgid "TORRENTS_VIEW_TITLE"
+msgstr "Torrents List"
+
+#: torrents/views.py:21
+msgid "TORRENTS_DOWNLOADS_VIEW_TITLE"
+msgstr "Torrents Files"
 
 #: users/admin.py:21
 msgid "Permissions"
@@ -172,7 +223,7 @@ msgstr ""
 msgid "users"
 msgstr ""
 
-#: users/templates/users/base.html:12 users/templates/users/base_old.html:11
+#: users/templates/users/base.html:12
 msgid "USERS_BASE_TITLE"
 msgstr "Simple File Server"
 
@@ -184,32 +235,13 @@ msgstr "Simple File Server"
 msgid "USERS_NAVBAR_LOGIN"
 msgstr "Login"
 
-#: users/templates/users/base.html:63
-msgid ""
-"\n"
-"          &copy;\n"
-"          <script>document.write(new Date().getFullYear().toString())</"
-"script>\n"
-"          <a href=\"/\" target=\"_blank\">SimpleFileServer</a> All Rights "
-"Reserved\n"
-"          "
-msgstr ""
-
-#: users/templates/users/login.html:15 users/templates/users/login_old.html:14
+#: users/templates/users/login.html:15
 msgid "USERS_LOGIN_CARD_TITLE"
 msgstr "Login Form"
 
-#: users/templates/users/login.html:53 users/templates/users/login_old.html:48
+#: users/templates/users/login.html:53
 msgid "USERS_LOGIN_CARD_SUBMIT"
 msgstr "Login"
-
-#: users/templates/users/login_old.html:30
-msgid "USERS_LOGIN_CARD_LOGIN_LABEL"
-msgstr "Username"
-
-#: users/templates/users/login_old.html:34
-msgid "USERS_LOGIN_CARD_PASSWORD_LABEL"
-msgstr "Password"
 
 #: users/views.py:29
 msgid "USER_LOGIN_PAGE_TITLE"

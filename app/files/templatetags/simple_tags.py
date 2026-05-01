@@ -13,7 +13,19 @@ def human_file_size(file_size: int):
     return HumanBytes.format(file_size, True, 2)
 
 
+@register.filter
+def human_bytes(file_size: int):
+    return HumanBytes.format(file_size, True, 2)
+
+
 @register.simple_tag
 def file_extension(file_name: str):
     name, extension = splitext(file_name)
     return extension.replace('.', '')
+
+
+@register.filter
+def file_type_label(file_name: str):
+    name, extension = splitext(file_name)
+    extension = extension.replace('.', '').upper()
+    return extension or 'FILE'

@@ -1,41 +1,28 @@
-{% load static i18n %}
-<div class="sidebar" data-color="danger" data-background-color="black" data-image="{% static 'img/sidebar-1.jpg' %}">
-  <div class="logo">
-    <a href="{% url 'files-index' %}" class="simple-text logo-mini">
-      {% trans 'FILES_SIDEBAR_LOGO_MINI' %}
-    </a>
-    <a href="{% url 'files-index' %}" class="simple-text logo-normal">
-      {% trans 'FILES_SIDEBAR_LOGO_NORMAL' %}
-    </a>
-  </div>
-  <div class="sidebar-wrapper">
-    <div class="user">
-      <div class="photo">
-        <img src="{% static 'img/default-avatar.png' %}"/>
-      </div>
-      <div class="user-info">
-        <a data-toggle="collapse" href="#userInfoCollapse" class="username">
-          <span>{{ user.username }}<b class="caret"></b></span>
-        </a>
-        <div class="collapse {{ nav_profile_collapsed }}" id="userInfoCollapse">
-          <ul class="nav">
-            <li class="nav-item {{ nav_logout }}">
-              <a class="nav-link" href="{% url 'user-logout' %}">
-                <span class="sidebar-mini"> {% trans 'FILES_SIDEBAR_LOGOUT_MINI' %} </span>
-                <span class="sidebar-normal"> {% trans 'FILES_SIDEBAR_LOGOUT_NORMAL' %} </span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <ul class="nav">
-      <li class="nav-item {{ nav_dashboard }}">
-        <a class="nav-link" href="{% url 'files-index' %}">
-          <i class="material-icons">dashboard</i>
-          <p> {% trans 'FILES_SIDEBAR_DASHBOARD' %} </p>
-        </a>
-      </li>
-    </ul>
-  </div>
+{% load i18n %}
+<div class="mb-8 rounded-2xl border border-base-300 bg-base-200/70 p-4">
+  <a href="{% url 'home' %}" class="flex items-center gap-3 text-xl font-bold tracking-tight">
+    <span class="grid h-10 w-10 place-items-center rounded-xl bg-primary text-primary-content shadow-sm">S</span>
+    {% trans 'Simple File Server' %}
+  </a>
+  <p class="mt-1 text-sm text-base-content/60">{% trans 'Private file sharing' %}</p>
 </div>
+<ul class="menu gap-1">
+  <li>
+    <a href="{% url 'home' %}" class="font-medium">
+      <i data-lucide="home" class="h-4 w-4"></i>
+      <span>Home</span>
+    </a>
+  </li>
+  <li>
+    <a href="{% url 'files-dashboard' %}" class="{% if title_category == 'Dashboard' %}active {% endif %}font-medium">
+      <i data-lucide="layout-dashboard" class="h-4 w-4"></i>
+      <span>Dashboard</span>
+    </a>
+  </li>
+  <li>
+    <a href="{% url 'files-index' %}" class="{% if title_category == 'File Explorer' %}active {% endif %}font-medium">
+      <i data-lucide="files" class="h-4 w-4"></i>
+      <span>File Explorer</span>
+    </a>
+  </li>
+</ul>

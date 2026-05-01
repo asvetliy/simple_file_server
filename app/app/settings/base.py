@@ -41,9 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'landing.apps.LandingConfig',
     'users.apps.UsersConfig',
-    'snowpenguin.django.recaptcha2',
-    'files.apps.FilesConfig'
+    'files.apps.FilesConfig',
 ]
 
 MIDDLEWARE = [
@@ -123,7 +123,7 @@ LOCALE_PATHS = (
 )
 
 LOGIN_URL = reverse_lazy('user-login')
-LOGIN_REDIRECT_URL = reverse_lazy('files-index')
+LOGIN_REDIRECT_URL = reverse_lazy('files-dashboard')
 LOGOUT_REDIRECT_URL = reverse_lazy('user-login')
 
 TIME_ZONE = 'UTC'
@@ -159,6 +159,11 @@ MESSAGE_TAGS = {
     message_constants.ERROR: 'alert alert-danger',
 }
 
-MAX_FILESIZE = 5  # in MB
+handler404 = 'files.errors.ErrorView404'
+handler500 = 'files.errors.ErrorView500'
+
+MAX_FILESIZE = 10  # in MB
+FILE_SHARE_EXPIRE_HOURS = 24
 MEDIA_ROOT = os.path.join(BASE_DIR, '../media')
+# TORRENTS_DOWNLOADS_ROOT = os.path.join(MEDIA_ROOT, './torrents/downloads')
 # MEDIA_FILES_EXT = ['.pdf', '.jpeg', '.jpg', '.png', ]

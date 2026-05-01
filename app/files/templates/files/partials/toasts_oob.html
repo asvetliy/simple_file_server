@@ -1,0 +1,5 @@
+{% if messages %}
+  <div id="toast-container" hx-swap-oob="beforeend:#toast-container">
+    {% include 'files/partials/toasts.html' %}
+  </div>
+{% endif %}

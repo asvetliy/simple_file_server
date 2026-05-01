@@ -1,0 +1,13 @@
+{% if messages %}
+  {% for message in messages %}
+    <div data-toast
+         class="grid w-full grid-cols-[auto_1fr_auto] items-start gap-3 rounded-box border bg-base-100 p-4 text-base-content shadow-xl transition duration-300 ease-out {% if message.tags == 'success' %}border-success/30{% elif message.tags == 'error' %}border-error/30{% elif message.tags == 'warning' %}border-warning/30{% else %}border-info/30{% endif %}">
+      <span class="mt-1 h-2.5 w-2.5 rounded-full {% if message.tags == 'success' %}bg-success{% elif message.tags == 'error' %}bg-error{% elif message.tags == 'warning' %}bg-warning{% else %}bg-info{% endif %}"></span>
+      <span class="min-w-0 whitespace-normal break-words text-sm leading-5">{{ message }}</span>
+      <button type="button"
+              class="btn btn-ghost btn-xs btn-square -mr-1 -mt-1 shrink-0 text-base-content/60 hover:text-base-content"
+              data-toast-close
+              aria-label="Close">x</button>
+    </div>
+  {% endfor %}
+{% endif %}

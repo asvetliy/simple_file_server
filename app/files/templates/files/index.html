@@ -1,197 +1,155 @@
 {% extends 'files/base.html' %}
-{% load static i18n %}
-{% block head %}
-  <link href="{% static 'css/jquery.filer.css' %}" rel="stylesheet"/>
-  <link href="{% static 'css/jquery.filer-dragdropbox-theme.css' %}" rel="stylesheet"/>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/file-icon-vectors@1.0.0/dist/file-icon-vivid.min.css"/>
-  <link rel="stylesheet" href="{% static 'fonts/jquery.filer-icons/jquery-filer.css' %}">
-  <script type="text/javascript" src="{% static 'js/core/jquery.min.js' %}"></script>
-  <script type="text/javascript">
-    let files_table = null;
+{% load i18n %}
 
-    function delete_file(file_id) {
-      $.post('/delete/' + file_id).done(function() {
-        files_table.ajax.reload();
-      });
-    }
-  </script>
-{% endblock %}
 {% block content %}
-  <div class="row">
-    <div class="col-md-12">
-      <div class="card">
-        <div class="card-header card-header-primary card-header-icon">
-          <div class="card-icon">
-            <i class="material-icons">assignment</i>
-          </div>
-          <h4 class="card-title">{{ title_category }}</h4>
-        </div>
-        <div class="card-body">
-          <div class="toolbar">
-          </div>
-          <div class="material-datatables">
-            <table id="files_table" class="table table-striped table-no-bordered table-hover" cellspacing="0"
-                   style="width:100%">
-              <thead>
-              <tr>
-                <th>{% trans 'FILES_TABLE_NAME' %}</th>
-                <th>{% trans 'FILES_TABLE_SIZE' %}</th>
-                <th>{% trans 'FILES_TABLE_CREATEDAT' %}</th>
-                <th class="disabled-sorting text-right">{% trans 'FILES_TABLE_ACTIONS' %}</th>
-              </tr>
-              </thead>
-              <tbody>
-              </tbody>
-              <tfoot>
-              <tr>
-                <th>{% trans 'FILES_TABLE_NAME' %}</th>
-                <th>{% trans 'FILES_TABLE_SIZE' %}</th>
-                <th>{% trans 'FILES_TABLE_CREATEDAT' %}</th>
-                <th class="text-right">{% trans 'FILES_TABLE_ACTIONS' %}</th>
-              </tr>
-              </tfoot>
-            </table>
-          </div>
-        </div>
-        <!-- end content-->
+<section id="drive-browser" class="mx-auto flex max-w-7xl flex-col gap-6">
+  <div class="rounded-box border border-base-300 bg-base-100/90 p-6 shadow-sm backdrop-blur">
+    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div>
+        <p class="text-sm font-medium uppercase text-primary">{% trans 'My drive' %}</p>
+        <h1 class="mt-1 flex items-center gap-3 text-4xl font-bold tracking-tight">
+          <span class="grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/15">
+            <i data-lucide="{% if current_folder %}folder-open{% else %}files{% endif %}" class="h-6 w-6"></i>
+          </span>
+          {% if current_folder %}{{ current_folder.name }}{% else %}{% trans 'File Explorer' %}{% endif %}
+        </h1>
+        <p class="mt-3 max-w-2xl text-base-content/70">
+          {% blocktrans with max_file_size=max_file_size %}Upload, search, download, and remove files up to {{ max_file_size }} MB.{% endblocktrans %}
+        </p>
       </div>
-      <!--  end card  -->
+      <div id="drive-location-stats" class="stats stats-vertical border border-base-300 bg-base-200 shadow-none sm:stats-horizontal">
+        <div class="stat py-4">
+          <div class="stat-title flex items-center gap-2">
+            <i data-lucide="file" class="h-4 w-4"></i>
+            {% trans 'Stored files' %}
+          </div>
+          <div class="stat-value text-primary">{{ files|length }}</div>
+        </div>
+        <div class="stat py-4">
+          <div class="stat-title flex items-center gap-2">
+            <i data-lucide="folder" class="h-4 w-4"></i>
+            {% trans 'Folders' %}
+          </div>
+          <div class="stat-value">{{ folders|length }}</div>
+        </div>
+      </div>
     </div>
-    <!-- end col-md-12 -->
   </div>
-  <!-- end row -->
-  <!-- Modal -->
-  <div class="modal fade bd-example-modal-lg" id="upload_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">{% trans 'FILES_UPLOADING_MODAL_TITLE' %}</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+
+  <div class="rounded-box border border-base-300 bg-base-100/90 p-4 shadow-sm backdrop-blur">
+    <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex gap-2">
+        <button class="btn btn-primary btn-square" type="button" onclick="upload_modal.showModal()" aria-label="{% trans 'Upload files' %}" title="{% trans 'Upload files' %}">
+          <i data-lucide="upload" class="h-5 w-5"></i>
+        </button>
+        <button class="btn btn-outline btn-primary btn-square" type="button" onclick="folder_modal.showModal()" aria-label="{% trans 'Create folder' %}" title="{% trans 'Create folder' %}">
+          <i data-lucide="folder-plus" class="h-5 w-5"></i>
+        </button>
+      </div>
+
+      <form class="join w-full lg:max-w-xl"
+            hx-get="{% url 'files-list' %}"
+            hx-target="#files-panel"
+            hx-push-url="false">
+        <input class="input input-bordered join-item w-full"
+               type="search"
+               name="q"
+               value="{{ query }}"
+               placeholder="{% trans 'Search files and folders' %}">
+        <button class="btn btn-primary join-item" type="submit" aria-label="{% trans 'Search' %}" title="{% trans 'Search' %}">
+          <i data-lucide="search" class="h-5 w-5"></i>
+        </button>
+        {% if current_folder %}
+          <input type="hidden" name="folder" value="{{ current_folder.id }}">
+        {% endif %}
+      </form>
+    </div>
+  </div>
+
+  {% include 'files/partials/file_list.html' %}
+
+  <dialog id="upload_modal" class="modal">
+    <div class="modal-box border border-base-300 bg-base-100">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-3 top-3" aria-label="{% trans 'Close' %}">
+          <i data-lucide="x" class="h-4 w-4"></i>
+        </button>
+      </form>
+      <h2 class="flex items-center gap-2 text-xl font-semibold">
+        <i data-lucide="upload-cloud" class="h-5 w-5 text-primary"></i>
+        {% trans 'Upload files' %}
+      </h2>
+      <p class="mt-2 text-sm text-base-content/60">{% trans 'Select one or more files from your device.' %}</p>
+
+      <form class="mt-6 space-y-4"
+            id="file-upload-form"
+            method="post"
+            action="{% url 'files-upload' %}"
+            enctype="multipart/form-data"
+            hx-post="{% url 'files-upload' %}"
+            hx-target="#files-panel"
+            hx-swap="outerHTML">
+        {% csrf_token %}
+        {% if current_folder %}
+          <input type="hidden" name="folder" value="{{ current_folder.id }}">
+        {% endif %}
+        <input id="id_file"
+               type="file"
+               name="file"
+               multiple
+               class="file-input file-input-bordered file-input-primary w-full">
+        <div class="modal-action">
+          <button class="btn btn-primary gap-2" type="submit">
+            <i data-lucide="upload" class="h-4 w-4"></i>
+            {% trans 'Upload' %}
           </button>
         </div>
-        <div class="modal-body">
-          <form id="upload_form" action="{% url 'files-upload' %}" method="post">
-            {% csrf_token %}
-            <input type="file" name="file[]" id="files_upload_input" multiple="multiple" />
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal">{% trans 'FILES_UPLOADING_MODAL_CLOSE' %}</button>
-        </div>
-      </div>
+      </form>
     </div>
-  </div>
-{% endblock %}
-{% block scripts %}
-  <script src="{% static 'js/plugins/jquery.dataTables.min.js' %}"></script>
-  <script src="{% static 'js/plugins/jquery.filer.min.js' %}" type="text/javascript"></script>
-  <script src="{% static 'js/plugins/jquery.filer.customs.js' %}"></script>
-  <script>
-    $(document).ready(function () {
-      files_table = $('#files_table').DataTable({
-        ajax: {
-          "url": "/list",
-          "type": "GET",
-          "dataSrc": "",
-        },
-        columns: [
-          {
-            "mData": "old_file_name",
-            "mRender": function (data, type, row) {
-              return '<div class="d-flex px-2 py-1"><div><span class="fiv-viv fiv-icon-' + row.old_file_name.split('.').slice(-1).pop() + '" style="width: 32px; height: 32px;"></span></div><div class="d-flex flex-column justify-content-center"><h6 class="mb-0 text-sm">' + row.old_file_name + '</h6></div></div>';
-            },
-          },
-          {
-            "mData": "file_size",
-            "mRender": function (data, type, row) {
-              return '<span class="badge badge-success">' + row.file_size + '</span>';
-            }
-          },
-          { "data": "created_at" },
-          {
-            "mRender": function (data, type, row) {
-              return '<a href="download/'+row.id+'" rel="tooltip" class="btn btn-info" data-original-title="" title=""><i class="material-icons">download</i></a>&nbsp;<button type="button" onclick="delete_file('+row.id+');" rel="tooltip" class="btn btn-danger" data-original-title="" title=""><i class="material-icons">close</i></button>';
-            },
-            "sClass": "text-right td-actions",
-          },
-        ],
-        "pagingType": "full_numbers",
-        "order": [[2, "desc"]],
-        "lengthMenu": [
-          [10, 25, 50, -1],
-          [10, 25, 50, "All"]
-        ],
-        responsive: true,
-        language: {
-          search: "_INPUT_",
-          searchPlaceholder: "{% trans 'FILES_TABLE_SEARCH_RECORDS' %}"
-        }
-      });
-      $("#files_upload_input").filer({
-        limit: 10,
-        maxSize: {{ max_file_size }},
-        extensions: null,
-        changeInput: '<div class="jFiler-input-dragDrop"><div class="jFiler-input-inner"><div class="jFiler-input-icon"><i class="icon-jfi-cloud-up-o"></i></div><div class="jFiler-input-text"><h3>Drag&Drop files here</h3> <span style="display:inline-block; margin: 15px 0">or</span></div><a class="jFiler-input-choose-btn blue">Browse Files</a></div></div>',
-        showThumbs: true,
-        theme: "dragdropbox",
-        templates: filer_options.templates,
-        dragDrop: {
-          dragEnter: null,
-          dragLeave: null,
-          drop: null,
-          dragContainer: null,
-        },
-        uploadFile: {
-          url: "{% url 'files-upload' %}",
-          data: {'csrfmiddlewaretoken': $('#upload_form').find("input[name=csrfmiddlewaretoken]").val()},
-          type: 'POST',
-          enctype: 'multipart/form-data',
-          synchron: false,
-          beforeSend: null,
-          success: function (data, itemEl, listEl, boxEl, newInputEl, inputEl, id) {
-            let parent = itemEl.find(".jFiler-jProgressBar").parent(), filerKit = inputEl.prop("jFiler");
-            filerKit.files_list[id].name = data['name'];
-            filerKit.files_list[id].id = data['id'];
-            itemEl.find(".jFiler-jProgressBar").fadeOut("slow", function () {
-              $("<div class=\"jFiler-item-others text-success\"><i class=\"icon-jfi-check-circle\"></i> {% trans 'FILES_LIST_TABLE_UPLOAD_SUCCESS' %}</div>").hide().appendTo(parent).fadeIn("slow");
-            });
-            files_table.ajax.reload();
-          },
-          error: function (el) {
-            let parent = el.find(".jFiler-jProgressBar").parent();
-            el.find(".jFiler-jProgressBar").fadeOut("slow", function () {
-              $("<div class=\"jFiler-item-others text-error\"><i class=\"icon-jfi-minus-circle\"></i> {% trans 'FILES_LIST_TABLE_UPLOAD_ERROR' %}</div>").hide().appendTo(parent).fadeIn("slow");
-            });
-          },
-          statusCode: null,
-          onProgress: null,
-          onComplete: null
-        },
-        files: null,
-        addMore: false,
-        allowDuplicates: true,
-        clipBoardPaste: true,
-        excludeName: null,
-        beforeRender: null,
-        afterRender: null,
-        beforeShow: null,
-        beforeSelect: null,
-        onSelect: null,
-        afterShow: null,
-        onRemove: null,
-        onEmpty: null,
-        options: null,
-        dialogs: {
-          alert: function (text) {
-            return alert(text);
-          },
-          confirm: function (text, callback) {
-            confirm(text) ? callback() : null;
-          }
-        },
-        captions: filer_options.captions
-      });
-    });
-  </script>
+    <form method="dialog" class="modal-backdrop">
+      <button>{% trans 'Close' %}</button>
+    </form>
+  </dialog>
+
+  <dialog id="folder_modal" class="modal">
+    <div class="modal-box border border-base-300 bg-base-100">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-3 top-3" aria-label="{% trans 'Close' %}">
+          <i data-lucide="x" class="h-4 w-4"></i>
+        </button>
+      </form>
+      <h2 class="flex items-center gap-2 text-xl font-semibold">
+        <i data-lucide="folder-plus" class="h-5 w-5 text-primary"></i>
+        {% trans 'New folder' %}
+      </h2>
+      <p class="mt-2 text-sm text-base-content/60">{% trans 'Create a folder in the current location.' %}</p>
+
+      <form class="mt-6 space-y-4"
+            id="folder-create-form"
+            method="post"
+            action="{% url 'folder-create' %}"
+            hx-post="{% url 'folder-create' %}"
+            hx-target="#files-panel"
+            hx-swap="outerHTML">
+        {% csrf_token %}
+        {% if current_folder %}
+          <input type="hidden" name="folder" value="{{ current_folder.id }}">
+        {% endif %}
+        {{ folder_form.name }}
+        <div class="modal-action">
+          <button class="btn btn-primary gap-2" type="submit">
+            <i data-lucide="plus" class="h-4 w-4"></i>
+            {% trans 'Create folder' %}
+          </button>
+        </div>
+      </form>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>{% trans 'Close' %}</button>
+    </form>
+  </dialog>
+</section>
+<script>
+  window.initDriveBrowser && window.initDriveBrowser();
+</script>
 {% endblock %}

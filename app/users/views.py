@@ -1,7 +1,9 @@
 from django.contrib.auth import views as auth_views
-from django.utils.translation import gettext_lazy as _
+from django.contrib.auth import login
+from django.shortcuts import redirect, render
+from django.views import View
 
-from .forms import *
+from .forms import UserAuthenticationForm, UserSignupForm
 
 
 class UserLoginView(auth_views.LoginView):
@@ -9,24 +11,34 @@ class UserLoginView(auth_views.LoginView):
     template_name = 'users/login.html'
     redirect_authenticated_user = True
 
-    def dispatch(self, request, *args, **kwargs):
-        if settings.RECAPTCHA_ENABLED:
-            if 'login_count' not in self.request.session:
-                request.session['login_count'] = 0
+    def get_template_names(self):
+        if self.request.headers.get('HX-Request'):
+            return ['users/partials/login_form.html']
+        return [self.template_name]
 
-        return super(UserLoginView, self).dispatch(request, *args, **kwargs)
 
-    def render_to_response(self, context, **response_kwargs):
-        if settings.RECAPTCHA_ENABLED:
-            if self.request.session['login_count'] >= settings.RECAPTCHA_LOGIN_FAILED_TRIES:
-                context['captcha'] = True
-                context['form'].fields['captcha'] = ReCaptchaField(
-                    widget=ReCaptchaWidget()
-                )
-            else:
-                context['captcha'] = False
-            self.request.session['login_count'] += 1
-            context['title'] = _('USER_LOGIN_PAGE_TITLE')
-        else:
-            context['captcha'] = False
-        return super(UserLoginView, self).render_to_response(context, **response_kwargs)
+class UserSignupView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('files-index')
+        template_name = 'users/partials/signup_form.html' if request.headers.get('HX-Request') else 'users/signup.html'
+        return render(request, template_name, {
+            'form': UserSignupForm(),
+            'title': 'Sign up',
+            'page': 'signup',
+        })
+
+    def post(self, request):
+        if request.user.is_authenticated:
+            return redirect('files-index')
+        form = UserSignupForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('files-index')
+        template_name = 'users/partials/signup_form.html' if request.headers.get('HX-Request') else 'users/signup.html'
+        return render(request, template_name, {
+            'form': form,
+            'title': 'Sign up',
+            'page': 'signup',
+        })

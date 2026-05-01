@@ -1,0 +1,210 @@
+{% load static i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <title>{% trans 'Simple File Server' %}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/apple-icon.png' %}">
+  <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: night)').matches;
+      document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'night' : 'winter'));
+    })();
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.24/dist/full.min.css" rel="stylesheet" type="text/css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen bg-base-200 text-base-content">
+  <header class="navbar sticky top-0 z-20 border-b border-base-300 bg-base-100/90 px-4 shadow-sm backdrop-blur lg:px-8">
+    <div class="flex-1">
+      <a href="{% url 'home' %}" class="btn btn-ghost gap-3 text-xl font-semibold">
+        <span class="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-content shadow-sm">S</span>
+        {% trans 'Simple File Server' %}
+      </a>
+    </div>
+    <div class="flex items-center gap-2">
+      <label class="swap swap-rotate btn btn-square btn-ghost" aria-label="{% trans 'Toggle theme' %}">
+        <input type="checkbox" data-theme-toggle>
+        <span class="swap-off text-xl">☀</span>
+        <span class="swap-on text-xl">☾</span>
+      </label>
+      {% if request.user.is_authenticated %}
+        <div class="dropdown dropdown-end">
+          <button tabindex="0" class="btn btn-ghost" type="button">
+            <span class="hidden sm:inline">{{ request.user.username }}</span>
+            <span class="avatar placeholder">
+              <span class="w-8 rounded-full bg-primary text-primary-content">{{ request.user.username|first|upper }}</span>
+            </span>
+          </button>
+          <ul tabindex="0" class="menu dropdown-content z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow">
+            <li>
+              <a href="{% url 'files-dashboard' %}" class="gap-2">
+                <i data-lucide="layout-dashboard" class="h-4 w-4"></i>
+                {% trans 'Dashboard' %}
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'files-index' %}" class="gap-2">
+                <i data-lucide="files" class="h-4 w-4"></i>
+                {% trans 'File Explorer' %}
+              </a>
+            </li>
+            <li>
+              <form method="post" action="{% url 'user-logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="flex w-full items-center gap-2 text-left">
+                  <i data-lucide="log-out" class="h-4 w-4"></i>
+                  {% trans 'Logout' %}
+                </button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      {% else %}
+        <a class="btn btn-ghost" href="{% url 'user-login' %}">{% trans 'Sign in' %}</a>
+        <a class="btn btn-primary" href="{% url 'user-signup' %}">{% trans 'Sign up' %}</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="overflow-hidden">
+    <section class="relative bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.18),transparent_34rem)]">
+      <div class="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-10 px-4 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:px-8">
+        <div>
+          <p class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+            <i data-lucide="cloud" class="h-4 w-4"></i>
+            {% trans 'Private Django file sharing' %}
+          </p>
+          <h1 class="mt-6 max-w-3xl text-5xl font-bold leading-tight tracking-tight lg:text-6xl">
+            {% trans 'Your files, folders, and drive overview in one calm workspace.' %}
+          </h1>
+          <p class="mt-6 max-w-2xl text-lg leading-8 text-base-content/70">
+            {% trans 'Upload documents, organize nested folders, search fast, and keep a clear dashboard of what your private drive contains.' %}
+          </p>
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+            {% if request.user.is_authenticated %}
+              <a class="btn btn-primary btn-lg gap-2" href="{% url 'files-index' %}">
+                <i data-lucide="files" class="h-5 w-5"></i>
+                {% trans 'Open File Explorer' %}
+              </a>
+              <a class="btn btn-outline btn-lg gap-2" href="{% url 'files-dashboard' %}">
+                <i data-lucide="layout-dashboard" class="h-5 w-5"></i>
+                {% trans 'View dashboard' %}
+              </a>
+            {% else %}
+              <a class="btn btn-primary btn-lg gap-2" href="{% url 'user-signup' %}">
+                <i data-lucide="user-plus" class="h-5 w-5"></i>
+                {% trans 'Create account' %}
+              </a>
+              <a class="btn btn-outline btn-lg gap-2" href="{% url 'user-login' %}">
+                <i data-lucide="log-in" class="h-5 w-5"></i>
+                {% trans 'Sign in' %}
+              </a>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="rounded-box border border-base-300 bg-base-100/90 p-5 shadow-2xl backdrop-blur">
+          <div class="mb-4 flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-primary">{% trans 'Drive preview' %}</p>
+              <h2 class="text-2xl font-bold">{% trans 'Simple, organized, fast' %}</h2>
+            </div>
+            <div class="grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary">
+              <i data-lucide="hard-drive" class="h-6 w-6"></i>
+            </div>
+          </div>
+          <div class="grid gap-3">
+            <div class="rounded-box border border-base-300 bg-base-200 p-4">
+              <div class="flex items-center gap-3">
+                <span class="grid h-11 w-11 place-items-center rounded-xl bg-warning/15 text-warning">
+                  <i data-lucide="folder" class="h-5 w-5"></i>
+                </span>
+                <div class="min-w-0 flex-1">
+                  <p class="font-semibold">{% trans 'Project folders' %}</p>
+                  <p class="text-sm text-base-content/60">{% trans 'Nested structure with recursive totals' %}</p>
+                </div>
+                <span class="badge badge-warning badge-outline">12</span>
+              </div>
+            </div>
+            <div class="rounded-box border border-base-300 bg-base-200 p-4">
+              <div class="flex items-center gap-3">
+                <span class="grid h-11 w-11 place-items-center rounded-xl bg-primary/10 text-primary">
+                  <i data-lucide="file-text" class="h-5 w-5"></i>
+                </span>
+                <div class="min-w-0 flex-1">
+                  <p class="font-semibold">{% trans 'Reports and notes' %}</p>
+                  <p class="text-sm text-base-content/60">{% trans 'Searchable file list with quick actions' %}</p>
+                </div>
+                <span class="badge badge-primary badge-outline">TXT</span>
+              </div>
+            </div>
+            <div class="rounded-box border border-base-300 bg-base-200 p-4">
+              <div class="flex items-center gap-3">
+                <span class="grid h-11 w-11 place-items-center rounded-xl bg-secondary/10 text-secondary">
+                  <i data-lucide="bar-chart-3" class="h-5 w-5"></i>
+                </span>
+                <div class="min-w-0 flex-1">
+                  <p class="font-semibold">{% trans 'Dashboard summary' %}</p>
+                  <p class="text-sm text-base-content/60">{% trans 'Storage, recent files, and largest files' %}</p>
+                </div>
+                <span class="badge badge-secondary badge-outline">LIVE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-t border-base-300 bg-base-100">
+      <div class="mx-auto grid max-w-7xl gap-4 px-4 py-10 md:grid-cols-3 lg:px-8">
+        <div class="rounded-box border border-base-300 p-5">
+          <i data-lucide="upload-cloud" class="h-7 w-7 text-primary"></i>
+          <h3 class="mt-4 font-semibold">{% trans 'HTMX uploads' %}</h3>
+          <p class="mt-2 text-sm text-base-content/60">{% trans 'Upload files without leaving the current folder.' %}</p>
+        </div>
+        <div class="rounded-box border border-base-300 p-5">
+          <i data-lucide="folder-tree" class="h-7 w-7 text-warning"></i>
+          <h3 class="mt-4 font-semibold">{% trans 'Nested folders' %}</h3>
+          <p class="mt-2 text-sm text-base-content/60">{% trans 'Browse folders without full page reloads.' %}</p>
+        </div>
+        <div class="rounded-box border border-base-300 p-5">
+          <i data-lucide="shield-check" class="h-7 w-7 text-success"></i>
+          <h3 class="mt-4 font-semibold">{% trans 'Private by default' %}</h3>
+          <p class="mt-2 text-sm text-base-content/60">{% trans 'Authenticated access keeps every user in their own drive.' %}</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      function refreshIcons() {
+        if (window.lucide) {
+          window.lucide.createIcons();
+        }
+      }
+      const toggles = document.querySelectorAll('[data-theme-toggle]');
+      const applyTheme = function (theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        toggles.forEach(function (toggle) {
+          toggle.checked = theme === 'night';
+        });
+      };
+      applyTheme(document.documentElement.getAttribute('data-theme') || 'winter');
+      toggles.forEach(function (toggle) {
+        toggle.addEventListener('change', function () {
+          applyTheme(toggle.checked ? 'night' : 'winter');
+        });
+      });
+      document.addEventListener('DOMContentLoaded', refreshIcons);
+    })();
+  </script>
+</body>
+</html>
