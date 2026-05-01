@@ -2,7 +2,15 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
 
-from .models import File, FileShare, Folder
+from .models import File, FileShare, Folder, StorageQuote
+
+
+@admin.register(StorageQuote)
+class StorageQuoteAdmin(admin.ModelAdmin):
+    list_display = ('name', 'quota_bytes', 'is_default', 'created_at',)
+    search_fields = ('name',)
+    list_filter = ('is_default',)
+    ordering = ('quota_bytes', 'name',)
 
 
 @admin.register(Folder)

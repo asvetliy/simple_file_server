@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from users.models import User
 
-from .models import File, FileShare, Folder
+from .models import File, FileShare, Folder, StorageQuote
 
 
 TEST_MEDIA_ROOT = tempfile.mkdtemp()
@@ -70,6 +70,32 @@ class FileViewsTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertFalse(File.objects.filter(user=self.user).exists())
+
+    def test_upload_rejects_file_when_storage_quota_is_exceeded(self):
+        quote = StorageQuote.objects.create(name='Tiny', quota_bytes=8)
+        self.user.storage_quote = quote
+        self.user.save(update_fields=['storage_quote'])
+        self.client.force_login(self.user)
+        upload = SimpleUploadedFile('too-much.txt', b'123456789', content_type='text/plain')
+
+        response = self.client.post(reverse('files-upload'), {'file': upload}, HTTP_HX_REQUEST='true')
+
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(File.objects.filter(user=self.user).exists())
+        self.assertContains(response, 'Not enough storage', status_code=400)
+
+    def test_upload_accepts_file_within_storage_quota(self):
+        quote = StorageQuote.objects.create(name='Small', quota_bytes=20)
+        self.user.storage_quote = quote
+        self.user.save(update_fields=['storage_quote'])
+        self.client.force_login(self.user)
+        upload = SimpleUploadedFile('fits.txt', b'123456789', content_type='text/plain')
+
+        response = self.client.post(reverse('files-upload'), {'file': upload}, HTTP_HX_REQUEST='true')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(File.objects.filter(user=self.user, old_file_name='fits.txt').exists())
+        self.assertContains(response, 'fits.txt')
 
     def test_file_list_only_shows_current_user_files_and_supports_search(self):
         self.client.force_login(self.user)

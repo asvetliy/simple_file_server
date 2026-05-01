@@ -16,7 +16,7 @@
     </p>
   </div>
 
-  <div class="grid gap-4 md:grid-cols-3">
+  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
     <div class="stat rounded-box border border-base-300 bg-base-100/90 shadow-sm">
       <div class="stat-figure text-primary">
         <i data-lucide="file" class="h-7 w-7"></i>
@@ -40,6 +40,17 @@
       <div class="stat-title">{% trans 'Storage used' %}</div>
       <div class="stat-value text-secondary">{{ total_size|human_bytes }}</div>
       <div class="stat-desc">{% trans 'Across your drive' %}</div>
+    </div>
+    <div class="stat rounded-box border border-base-300 bg-base-100/90 shadow-sm">
+      <div class="stat-figure text-accent">
+        <i data-lucide="gauge" class="h-7 w-7"></i>
+      </div>
+      <div class="stat-title">
+        {% if storage_quote %}{{ storage_quote.name }}{% else %}{% trans 'Storage plan' %}{% endif %}
+      </div>
+      <div class="stat-value text-accent">{{ storage_usage_percent }}%</div>
+      <div class="stat-desc">{{ storage_remaining_bytes|human_bytes }} {% trans 'free of' %} {{ storage_quota_bytes|human_bytes }}</div>
+      <progress class="progress progress-accent mt-3 w-full" value="{{ storage_usage_percent }}" max="100"></progress>
     </div>
   </div>
 

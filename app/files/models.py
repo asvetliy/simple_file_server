@@ -10,6 +10,25 @@ from .validators import validate_file
 from .formaters import HumanBytes
 
 
+class StorageQuote(models.Model):
+    name = models.CharField(max_length=80, unique=True)
+    quota_bytes = models.PositiveBigIntegerField(default=settings.DEFAULT_STORAGE_QUOTA_BYTES)
+    is_default = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.is_default:
+            StorageQuote.objects.exclude(pk=self.pk).update(is_default=False)
+
+    class Meta:
+        db_table = 'storage_quotes'
+        ordering = ('quota_bytes', 'name')
+
+
 class Folder(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE)
     parent = models.ForeignKey('self', models.CASCADE, blank=True, null=True, related_name='children')
@@ -89,7 +108,7 @@ class File(models.Model):
             'id': self.id,
             'created_at': formats.localize(self.created_at),
             'old_file_name': self.old_file_name,
-            'human_file_size': HumanBytes.format(self.file.size),
+            'human_file_size': HumanBytes.format(self.file.size, True, 2),
             'badge_color_id': self.get_color_id(),
             'file_size': self.file.size,
             'folder_id': self.folder_id,

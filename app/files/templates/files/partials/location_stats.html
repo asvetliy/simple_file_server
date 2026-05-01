@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n simple_tags %}
 <div id="drive-location-stats" class="stats stats-vertical border border-base-300 bg-base-200 shadow-none sm:stats-horizontal">
   <div class="stat py-4">
     <div class="stat-title flex items-center gap-2">
@@ -13,5 +13,14 @@
       {% trans 'Folders' %}
     </div>
     <div class="stat-value">{{ folders|length }}</div>
+  </div>
+  <div class="stat py-4">
+    <div class="stat-title flex items-center gap-2">
+      <i data-lucide="hard-drive" class="h-4 w-4"></i>
+      {% trans 'Storage' %}
+    </div>
+    <div class="stat-value text-secondary">{{ storage_usage_percent }}%</div>
+    <div class="stat-desc">{{ storage_used_bytes|human_bytes }} / {{ storage_quota_bytes|human_bytes }}</div>
+    <progress class="progress progress-secondary mt-2 w-36" value="{{ storage_usage_percent }}" max="100"></progress>
   </div>
 </div>

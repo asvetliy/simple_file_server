@@ -12,12 +12,13 @@ class UserAdmin(BaseUserAdmin):
             'classes': ('wide',),
             'fields': (
                 'username', 'password1', 'password2', 'is_staff', 'is_superuser',
+                'storage_quote',
             )
         }
          ),
     )
     fieldsets = (
-        (None, {'fields': ('username', 'password')}),
+        (None, {'fields': ('username', 'password', 'storage_quote')}),
         (_('Permissions'), {
             'fields': (
                 'is_superuser', 'groups', 'user_permissions',
@@ -25,6 +26,6 @@ class UserAdmin(BaseUserAdmin):
         }),
         (_('Important dates'), {'fields': ('last_login', 'date_joined',)}),
     )
-    list_display = ('username', 'is_staff', 'date_joined',)
+    list_display = ('username', 'storage_quote', 'is_staff', 'date_joined',)
     list_per_page = 20
     ordering = ('-date_joined',)

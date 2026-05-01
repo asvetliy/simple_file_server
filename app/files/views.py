@@ -56,14 +56,25 @@ def get_user_folders(request, current_folder=None):
 def get_drive_stats(user):
     files = File.objects.filter(user=user).order_by('-created_at')
     folders = Folder.objects.filter(user=user).order_by('-created_at')
-    total_size = sum(file.file.size for file in files if file.file)
+    total_size = user.storage_used_bytes
     return {
         'file_count': files.count(),
         'folder_count': folders.count(),
         'total_size': total_size,
+        **get_storage_context(user),
         'recent_files': files[:5],
         'recent_folders': folders[:5],
         'largest_files': sorted(files, key=lambda item: item.file.size if item.file else 0, reverse=True)[:5],
+    }
+
+
+def get_storage_context(user):
+    return {
+        'storage_quote': user.storage_quote,
+        'storage_quota_bytes': user.storage_quota_bytes,
+        'storage_used_bytes': user.storage_used_bytes,
+        'storage_remaining_bytes': user.storage_remaining_bytes,
+        'storage_usage_percent': user.storage_usage_percent,
     }
 
 
@@ -76,6 +87,7 @@ def render_files_partial(request, status=200, current_folder=None):
         'current_folder': current_folder,
         'breadcrumbs': get_breadcrumbs(current_folder),
         'query': request.GET.get('q', '').strip(),
+        **get_storage_context(request.user),
     }
     return render(request, 'files/partials/file_list_response.html', context=context, status=status)
 
@@ -102,6 +114,7 @@ class FilesIndexView(LoginRequiredMixin, View):
             'folder_form': FolderCreateForm(),
             'title_category': _('File Explorer'),
             'max_file_size': settings.MAX_FILESIZE,
+            **get_storage_context(request.user),
         }
         return render(request, 'files/index.html', context=context)
 
@@ -115,15 +128,23 @@ class FilesUploadView(LoginRequiredMixin, View):
             return render_files_partial(request, status=400)
 
         created = 0
+        used_bytes = request.user.storage_used_bytes
+        quota_bytes = request.user.storage_quota_bytes
         for uploaded_file in uploaded_files:
             form = FileUploadForm(files={'file': uploaded_file})
             if form.is_valid():
+                if used_bytes + uploaded_file.size > quota_bytes:
+                    messages.error(request, _('Not enough storage for %(name)s. Upgrade your plan or delete files to free space.') % {
+                        'name': uploaded_file.name,
+                    })
+                    continue
                 File.objects.create(
                     user=request.user,
                     folder=current_folder,
                     old_file_name=uploaded_file.name,
                     file=form.cleaned_data['file'],
                 )
+                used_bytes += uploaded_file.size
                 created += 1
             else:
                 messages.error(request, _('Could not upload %(name)s: %(error)s') % {

@@ -1,4 +1,5 @@
 from django.apps import apps
+from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
@@ -6,6 +7,11 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.auth.models import PermissionsMixin, UserManager
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+
+
+def get_default_storage_quote():
+    StorageQuote = apps.get_model('files', 'StorageQuote')
+    return StorageQuote.objects.filter(is_default=True).order_by('quota_bytes', 'name').first()
 
 
 class CustomUserManager(UserManager):
@@ -22,6 +28,7 @@ class CustomUserManager(UserManager):
         # managers are by definition working on the real model.
         GlobalUserModel = apps.get_model(self.model._meta.app_label, self.model._meta.object_name)
         username = GlobalUserModel.normalize_username(username)
+        extra_fields.setdefault('storage_quote', get_default_storage_quote())
         user = self.model(username=username, **extra_fields)
         user.password = make_password(password)
         user.save(using=self._db)
@@ -75,8 +82,42 @@ class User(AbstractBaseUser, PermissionsMixin):
         ),
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    storage_quote = models.ForeignKey(
+        'files.StorageQuote',
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='users',
+    )
 
     objects = CustomUserManager()
+
+    @property
+    def storage_quota_bytes(self):
+        if self.storage_quote_id:
+            return self.storage_quote.quota_bytes
+        return settings.DEFAULT_STORAGE_QUOTA_BYTES
+
+    @property
+    def storage_used_bytes(self):
+        File = apps.get_model('files', 'File')
+        return sum(file.file.size for file in File.objects.filter(user=self) if file.file)
+
+    @property
+    def storage_remaining_bytes(self):
+        return max(self.storage_quota_bytes - self.storage_used_bytes, 0)
+
+    @property
+    def storage_usage_percent(self):
+        quota = self.storage_quota_bytes
+        if quota <= 0:
+            return 100
+        return min(round((self.storage_used_bytes / quota) * 100), 100)
+
+    def save(self, *args, **kwargs):
+        if self.storage_quote_id is None:
+            self.storage_quote = get_default_storage_quote()
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = _('user')

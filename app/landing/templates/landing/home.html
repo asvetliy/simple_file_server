@@ -1,4 +1,4 @@
-{% load static i18n %}
+{% load static i18n simple_tags %}
 {% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
@@ -19,19 +19,26 @@
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.24/dist/full.min.css" rel="stylesheet" type="text/css">
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="min-h-screen bg-base-200 text-base-content">
-  <header class="navbar sticky top-0 z-20 border-b border-base-300 bg-base-100/90 px-4 shadow-sm backdrop-blur lg:px-8">
+<body class="min-h-screen bg-base-100 text-base-content">
+  <header class="navbar sticky top-0 z-20 border-b border-base-300 bg-base-100/95 px-4 shadow-sm backdrop-blur lg:px-8">
     <div class="flex-1">
       <a href="{% url 'home' %}" class="btn btn-ghost gap-3 text-xl font-semibold">
-        <span class="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-content shadow-sm">S</span>
+        <span class="grid h-9 w-9 place-items-center rounded-lg bg-primary text-primary-content shadow-sm">
+          <i data-lucide="box" class="h-5 w-5"></i>
+        </span>
         {% trans 'Simple File Server' %}
       </a>
     </div>
+    <nav class="hidden items-center gap-1 px-4 lg:flex">
+      <a class="btn btn-ghost btn-sm" href="#features">{% trans 'Features' %}</a>
+      <a class="btn btn-ghost btn-sm" href="#plans">{% trans 'Plans' %}</a>
+      <a class="btn btn-ghost btn-sm" href="#workflow">{% trans 'Workflow' %}</a>
+    </nav>
     <div class="flex items-center gap-2">
       <label class="swap swap-rotate btn btn-square btn-ghost" aria-label="{% trans 'Toggle theme' %}">
         <input type="checkbox" data-theme-toggle>
-        <span class="swap-off text-xl">☀</span>
-        <span class="swap-on text-xl">☾</span>
+        <i data-lucide="sun" class="swap-off h-5 w-5"></i>
+        <i data-lucide="moon" class="swap-on h-5 w-5"></i>
       </label>
       {% if request.user.is_authenticated %}
         <div class="dropdown dropdown-end">
@@ -66,94 +73,177 @@
           </ul>
         </div>
       {% else %}
-        <a class="btn btn-ghost" href="{% url 'user-login' %}">{% trans 'Sign in' %}</a>
-        <a class="btn btn-primary" href="{% url 'user-signup' %}">{% trans 'Sign up' %}</a>
+        <a class="btn btn-ghost" href="{% url 'user-login' %}">{% trans 'Log in' %}</a>
+        <a class="btn btn-primary" href="{% url 'user-signup' %}">{% trans 'Get started' %}</a>
       {% endif %}
     </div>
   </header>
 
   <main class="overflow-hidden">
-    <section class="relative bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.18),transparent_34rem)]">
-      <div class="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-10 px-4 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:px-8">
-        <div>
-          <p class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
-            <i data-lucide="cloud" class="h-4 w-4"></i>
-            {% trans 'Private Django file sharing' %}
+    <section class="border-b border-base-300 bg-base-100">
+      <div class="mx-auto grid max-w-7xl items-center gap-10 px-4 pb-12 pt-14 lg:grid-cols-[0.9fr_1.1fr] lg:px-8 lg:pb-16 lg:pt-20">
+        <div class="max-w-2xl">
+          <p class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
+            <i data-lucide="shield-check" class="h-4 w-4"></i>
+            {% trans 'Private cloud storage for your workspace' %}
           </p>
-          <h1 class="mt-6 max-w-3xl text-5xl font-bold leading-tight tracking-tight lg:text-6xl">
-            {% trans 'Your files, folders, and drive overview in one calm workspace.' %}
+          <h1 class="mt-6 text-5xl font-black leading-[1.02] tracking-tight md:text-6xl lg:text-7xl">
+            {% trans 'Secure file storage for your team' %}
           </h1>
-          <p class="mt-6 max-w-2xl text-lg leading-8 text-base-content/70">
-            {% trans 'Upload documents, organize nested folders, search fast, and keep a clear dashboard of what your private drive contains.' %}
+          <p class="mt-6 text-lg leading-8 text-base-content/70 md:text-xl">
+            {% trans 'A focused Dropbox-style home for uploads, folders, sharing links, QR downloads, and storage limits. Built with Django, HTMX, and DaisyUI.' %}
           </p>
           <div class="mt-8 flex flex-col gap-3 sm:flex-row">
             {% if request.user.is_authenticated %}
-              <a class="btn btn-primary btn-lg gap-2" href="{% url 'files-index' %}">
+              <a class="btn btn-primary btn-lg gap-2 rounded-lg" href="{% url 'files-index' %}">
                 <i data-lucide="files" class="h-5 w-5"></i>
                 {% trans 'Open File Explorer' %}
               </a>
-              <a class="btn btn-outline btn-lg gap-2" href="{% url 'files-dashboard' %}">
+              <a class="btn btn-outline btn-lg gap-2 rounded-lg" href="{% url 'files-dashboard' %}">
                 <i data-lucide="layout-dashboard" class="h-5 w-5"></i>
                 {% trans 'View dashboard' %}
               </a>
             {% else %}
-              <a class="btn btn-primary btn-lg gap-2" href="{% url 'user-signup' %}">
+              <a class="btn btn-primary btn-lg gap-2 rounded-lg" href="{% url 'user-signup' %}">
                 <i data-lucide="user-plus" class="h-5 w-5"></i>
-                {% trans 'Create account' %}
+                {% trans 'Start free' %}
               </a>
-              <a class="btn btn-outline btn-lg gap-2" href="{% url 'user-login' %}">
+              <a class="btn btn-outline btn-lg gap-2 rounded-lg" href="{% url 'user-login' %}">
                 <i data-lucide="log-in" class="h-5 w-5"></i>
-                {% trans 'Sign in' %}
+                {% trans 'Log in' %}
               </a>
             {% endif %}
           </div>
-        </div>
-
-        <div class="rounded-box border border-base-300 bg-base-100/90 p-5 shadow-2xl backdrop-blur">
-          <div class="mb-4 flex items-center justify-between">
-            <div>
-              <p class="text-sm font-medium text-primary">{% trans 'Drive preview' %}</p>
-              <h2 class="text-2xl font-bold">{% trans 'Simple, organized, fast' %}</h2>
+          <div class="mt-8 grid max-w-lg grid-cols-3 gap-3 text-sm">
+            <div class="border-l-2 border-primary pl-3">
+              <p class="font-bold">{% trans '1 TB' %}</p>
+              <p class="text-base-content/60">{% trans 'Premium plan' %}</p>
             </div>
-            <div class="grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary">
-              <i data-lucide="hard-drive" class="h-6 w-6"></i>
+            <div class="border-l-2 border-warning pl-3">
+              <p class="font-bold">{% trans 'QR links' %}</p>
+              <p class="text-base-content/60">{% trans 'Fast sharing' %}</p>
+            </div>
+            <div class="border-l-2 border-success pl-3">
+              <p class="font-bold">{% trans 'HTMX' %}</p>
+              <p class="text-base-content/60">{% trans 'No reloads' %}</p>
             </div>
           </div>
-          <div class="grid gap-3">
-            <div class="rounded-box border border-base-300 bg-base-200 p-4">
-              <div class="flex items-center gap-3">
-                <span class="grid h-11 w-11 place-items-center rounded-xl bg-warning/15 text-warning">
-                  <i data-lucide="folder" class="h-5 w-5"></i>
-                </span>
-                <div class="min-w-0 flex-1">
-                  <p class="font-semibold">{% trans 'Project folders' %}</p>
-                  <p class="text-sm text-base-content/60">{% trans 'Nested structure with recursive totals' %}</p>
-                </div>
-                <span class="badge badge-warning badge-outline">12</span>
+        </div>
+
+        <div class="relative">
+          <div class="overflow-hidden rounded-lg border border-base-300 bg-base-200 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-base-300 bg-base-100 px-4 py-3">
+              <div class="flex items-center gap-2">
+                <span class="h-3 w-3 rounded-full bg-error"></span>
+                <span class="h-3 w-3 rounded-full bg-warning"></span>
+                <span class="h-3 w-3 rounded-full bg-success"></span>
+              </div>
+              <div class="hidden items-center gap-2 rounded-lg border border-base-300 bg-base-200 px-3 py-1 text-xs text-base-content/60 sm:flex">
+                <i data-lucide="lock" class="h-3.5 w-3.5"></i>
+                app.simple-drive.local
               </div>
             </div>
-            <div class="rounded-box border border-base-300 bg-base-200 p-4">
-              <div class="flex items-center gap-3">
-                <span class="grid h-11 w-11 place-items-center rounded-xl bg-primary/10 text-primary">
-                  <i data-lucide="file-text" class="h-5 w-5"></i>
-                </span>
-                <div class="min-w-0 flex-1">
-                  <p class="font-semibold">{% trans 'Reports and notes' %}</p>
-                  <p class="text-sm text-base-content/60">{% trans 'Searchable file list with quick actions' %}</p>
+            <div class="grid min-h-[430px] grid-cols-[5rem_1fr] md:grid-cols-[13rem_1fr]">
+              <aside class="border-r border-base-300 bg-base-100 p-3 md:p-4">
+                <div class="mb-6 hidden items-center gap-2 md:flex">
+                  <span class="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-content">
+                    <i data-lucide="box" class="h-4 w-4"></i>
+                  </span>
+                  <span class="font-bold">{% trans 'Drive' %}</span>
                 </div>
-                <span class="badge badge-primary badge-outline">TXT</span>
-              </div>
-            </div>
-            <div class="rounded-box border border-base-300 bg-base-200 p-4">
-              <div class="flex items-center gap-3">
-                <span class="grid h-11 w-11 place-items-center rounded-xl bg-secondary/10 text-secondary">
-                  <i data-lucide="bar-chart-3" class="h-5 w-5"></i>
-                </span>
-                <div class="min-w-0 flex-1">
-                  <p class="font-semibold">{% trans 'Dashboard summary' %}</p>
-                  <p class="text-sm text-base-content/60">{% trans 'Storage, recent files, and largest files' %}</p>
+                <div class="space-y-2">
+                  <div class="flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-primary-content">
+                    <i data-lucide="files" class="h-4 w-4"></i>
+                    <span class="hidden text-sm font-medium md:inline">{% trans 'File Explorer' %}</span>
+                  </div>
+                  <div class="flex items-center gap-2 rounded-lg px-3 py-2 text-base-content/70">
+                    <i data-lucide="layout-dashboard" class="h-4 w-4"></i>
+                    <span class="hidden text-sm md:inline">{% trans 'Dashboard' %}</span>
+                  </div>
+                  <div class="flex items-center gap-2 rounded-lg px-3 py-2 text-base-content/70">
+                    <i data-lucide="share-2" class="h-4 w-4"></i>
+                    <span class="hidden text-sm md:inline">{% trans 'Shared' %}</span>
+                  </div>
                 </div>
-                <span class="badge badge-secondary badge-outline">LIVE</span>
+                <div class="mt-8 hidden rounded-lg border border-base-300 bg-base-200 p-3 md:block">
+                  <div class="mb-2 flex items-center justify-between text-xs">
+                    <span>{% trans 'Storage' %}</span>
+                    <span>42%</span>
+                  </div>
+                  <progress class="progress progress-primary w-full" value="42" max="100"></progress>
+                </div>
+              </aside>
+              <div class="p-4 md:p-6">
+                <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <p class="text-sm text-base-content/60">{% trans 'My drive' %}</p>
+                    <h2 class="text-2xl font-bold">{% trans 'Project files' %}</h2>
+                  </div>
+                  <div class="flex gap-2">
+                    <button class="btn btn-primary btn-sm rounded-lg">
+                      <i data-lucide="upload" class="h-4 w-4"></i>
+                      <span class="hidden sm:inline">{% trans 'Upload' %}</span>
+                    </button>
+                    <button class="btn btn-outline btn-sm rounded-lg">
+                      <i data-lucide="folder-plus" class="h-4 w-4"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="mt-5 grid gap-3 sm:grid-cols-3">
+                  <div class="rounded-lg border border-base-300 bg-base-100 p-4">
+                    <i data-lucide="folder" class="h-5 w-5 text-warning"></i>
+                    <p class="mt-3 text-2xl font-bold">18</p>
+                    <p class="text-xs text-base-content/60">{% trans 'Folders' %}</p>
+                  </div>
+                  <div class="rounded-lg border border-base-300 bg-base-100 p-4">
+                    <i data-lucide="file" class="h-5 w-5 text-primary"></i>
+                    <p class="mt-3 text-2xl font-bold">248</p>
+                    <p class="text-xs text-base-content/60">{% trans 'Files' %}</p>
+                  </div>
+                  <div class="rounded-lg border border-base-300 bg-base-100 p-4">
+                    <i data-lucide="hard-drive" class="h-5 w-5 text-success"></i>
+                    <p class="mt-3 text-2xl font-bold">420 GB</p>
+                    <p class="text-xs text-base-content/60">{% trans 'Free' %}</p>
+                  </div>
+                </div>
+                <div class="mt-5 overflow-hidden rounded-lg border border-base-300 bg-base-100">
+                  <div class="grid grid-cols-[1fr_auto] border-b border-base-300 px-4 py-3 text-xs font-semibold uppercase text-base-content/50">
+                    <span>{% trans 'Name' %}</span>
+                    <span>{% trans 'Action' %}</span>
+                  </div>
+                  <div class="divide-y divide-base-300">
+                    <div class="grid grid-cols-[1fr_auto] items-center gap-3 px-4 py-3">
+                      <div class="flex items-center gap-3">
+                        <span class="grid h-9 w-9 place-items-center rounded-lg bg-warning/15 text-warning"><i data-lucide="folder" class="h-4 w-4"></i></span>
+                        <div>
+                          <p class="font-medium">{% trans 'Client assets' %}</p>
+                          <p class="text-xs text-base-content/60">{% trans '12 folders, 2.4 GB' %}</p>
+                        </div>
+                      </div>
+                      <i data-lucide="chevron-right" class="h-4 w-4 text-base-content/40"></i>
+                    </div>
+                    <div class="grid grid-cols-[1fr_auto] items-center gap-3 px-4 py-3">
+                      <div class="flex items-center gap-3">
+                        <span class="grid h-9 w-9 place-items-center rounded-lg bg-primary/10 text-primary"><i data-lucide="file-text" class="h-4 w-4"></i></span>
+                        <div>
+                          <p class="font-medium">{% trans 'Launch notes.txt' %}</p>
+                          <p class="text-xs text-base-content/60">{% trans 'Shared by QR link' %}</p>
+                        </div>
+                      </div>
+                      <i data-lucide="qr-code" class="h-4 w-4 text-primary"></i>
+                    </div>
+                    <div class="grid grid-cols-[1fr_auto] items-center gap-3 px-4 py-3">
+                      <div class="flex items-center gap-3">
+                        <span class="grid h-9 w-9 place-items-center rounded-lg bg-success/10 text-success"><i data-lucide="file-check" class="h-4 w-4"></i></span>
+                        <div>
+                          <p class="font-medium">{% trans 'Budget.xlsx' %}</p>
+                          <p class="text-xs text-base-content/60">{% trans 'Updated today' %}</p>
+                        </div>
+                      </div>
+                      <i data-lucide="download" class="h-4 w-4 text-base-content/50"></i>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -161,26 +251,160 @@
       </div>
     </section>
 
-    <section class="border-t border-base-300 bg-base-100">
-      <div class="mx-auto grid max-w-7xl gap-4 px-4 py-10 md:grid-cols-3 lg:px-8">
-        <div class="rounded-box border border-base-300 p-5">
-          <i data-lucide="upload-cloud" class="h-7 w-7 text-primary"></i>
-          <h3 class="mt-4 font-semibold">{% trans 'HTMX uploads' %}</h3>
-          <p class="mt-2 text-sm text-base-content/60">{% trans 'Upload files without leaving the current folder.' %}</p>
+    <section id="features" class="bg-base-200">
+      <div class="mx-auto max-w-7xl px-4 py-14 lg:px-8">
+        <div class="grid gap-6 md:grid-cols-[0.8fr_1.2fr] md:items-end">
+          <div>
+            <p class="text-sm font-semibold uppercase text-primary">{% trans 'Built for daily file work' %}</p>
+            <h2 class="mt-2 text-3xl font-bold tracking-tight md:text-4xl">{% trans 'Everything important stays one click away' %}</h2>
+          </div>
+          <p class="text-base-content/70 md:text-lg">
+            {% trans 'The app keeps the Dropbox-like basics clear: upload files, organize folders, search, share, and see storage usage without breaking your flow.' %}
+          </p>
         </div>
-        <div class="rounded-box border border-base-300 p-5">
-          <i data-lucide="folder-tree" class="h-7 w-7 text-warning"></i>
-          <h3 class="mt-4 font-semibold">{% trans 'Nested folders' %}</h3>
-          <p class="mt-2 text-sm text-base-content/60">{% trans 'Browse folders without full page reloads.' %}</p>
+        <div class="mt-8 grid gap-4 md:grid-cols-3">
+          <div class="rounded-lg border border-base-300 bg-base-100 p-6 shadow-sm">
+            <i data-lucide="upload-cloud" class="h-7 w-7 text-primary"></i>
+            <h3 class="mt-5 text-lg font-semibold">{% trans 'Fast uploads' %}</h3>
+            <p class="mt-2 text-sm leading-6 text-base-content/60">{% trans 'Upload files from a modal and return directly to the folder you were working in.' %}</p>
+          </div>
+          <div class="rounded-lg border border-base-300 bg-base-100 p-6 shadow-sm">
+            <i data-lucide="folder-tree" class="h-7 w-7 text-warning"></i>
+            <h3 class="mt-5 text-lg font-semibold">{% trans 'Folder hierarchy' %}</h3>
+            <p class="mt-2 text-sm leading-6 text-base-content/60">{% trans 'Move through nested folders with HTMX updates instead of full browser reloads.' %}</p>
+          </div>
+          <div class="rounded-lg border border-base-300 bg-base-100 p-6 shadow-sm">
+            <i data-lucide="qr-code" class="h-7 w-7 text-success"></i>
+            <h3 class="mt-5 text-lg font-semibold">{% trans 'Share links' %}</h3>
+            <p class="mt-2 text-sm leading-6 text-base-content/60">{% trans 'Create expiring download links with QR codes, then unshare when access should end.' %}</p>
+          </div>
         </div>
-        <div class="rounded-box border border-base-300 p-5">
-          <i data-lucide="shield-check" class="h-7 w-7 text-success"></i>
-          <h3 class="mt-4 font-semibold">{% trans 'Private by default' %}</h3>
-          <p class="mt-2 text-sm text-base-content/60">{% trans 'Authenticated access keeps every user in their own drive.' %}</p>
+      </div>
+    </section>
+
+    <section id="workflow" class="bg-base-100">
+      <div class="mx-auto grid max-w-7xl gap-8 px-4 py-14 lg:grid-cols-2 lg:px-8">
+        <div class="rounded-lg border border-base-300 bg-base-200 p-6">
+          <div class="flex items-center gap-3">
+            <span class="grid h-12 w-12 place-items-center rounded-lg bg-primary text-primary-content">
+              <i data-lucide="activity" class="h-6 w-6"></i>
+            </span>
+            <div>
+              <p class="text-sm font-semibold uppercase text-primary">{% trans 'Live workspace' %}</p>
+              <h2 class="text-3xl font-bold">{% trans 'Less waiting, more managing' %}</h2>
+            </div>
+          </div>
+          <div class="mt-6 space-y-3">
+            <div class="flex gap-4 rounded-lg bg-base-100 p-4">
+              <span class="mt-1 h-2.5 w-2.5 rounded-full bg-primary"></span>
+              <div>
+                <p class="font-semibold">{% trans 'Search refreshes the file list in place' %}</p>
+                <p class="text-sm text-base-content/60">{% trans 'No page jump when filtering current folders.' %}</p>
+              </div>
+            </div>
+            <div class="flex gap-4 rounded-lg bg-base-100 p-4">
+              <span class="mt-1 h-2.5 w-2.5 rounded-full bg-warning"></span>
+              <div>
+                <p class="font-semibold">{% trans 'Storage counters update after every action' %}</p>
+                <p class="text-sm text-base-content/60">{% trans 'Uploads and deletes immediately reflect the user plan quota.' %}</p>
+              </div>
+            </div>
+            <div class="flex gap-4 rounded-lg bg-base-100 p-4">
+              <span class="mt-1 h-2.5 w-2.5 rounded-full bg-success"></span>
+              <div>
+                <p class="font-semibold">{% trans 'Toasts and modals keep feedback polished' %}</p>
+                <p class="text-sm text-base-content/60">{% trans 'No harsh browser alerts during normal file work.' %}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="rounded-lg border border-base-300 bg-base-100 p-6 shadow-sm">
+            <i data-lucide="users" class="h-7 w-7 text-secondary"></i>
+            <p class="mt-8 text-4xl font-bold">3</p>
+            <p class="mt-2 text-base-content/60">{% trans 'Admin-managed storage plans' %}</p>
+          </div>
+          <div class="rounded-lg border border-base-300 bg-base-100 p-6 shadow-sm">
+            <i data-lucide="timer" class="h-7 w-7 text-primary"></i>
+            <p class="mt-8 text-4xl font-bold">24h</p>
+            <p class="mt-2 text-base-content/60">{% trans 'Default share expiration window' %}</p>
+          </div>
+          <div class="rounded-lg border border-base-300 bg-base-100 p-6 shadow-sm sm:col-span-2">
+            <i data-lucide="gauge" class="h-7 w-7 text-success"></i>
+            <p class="mt-8 text-4xl font-bold">{% trans 'Hard limits' %}</p>
+            <p class="mt-2 max-w-lg text-base-content/60">{% trans 'Users cannot upload beyond the quote assigned to them in Django admin.' %}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="plans" class="border-t border-base-300 bg-base-200">
+      <div class="mx-auto max-w-7xl px-4 py-14 lg:px-8">
+        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div class="max-w-2xl">
+            <p class="text-sm font-semibold uppercase text-primary">{% trans 'Storage plans' %}</p>
+            <h2 class="mt-2 text-3xl font-bold tracking-tight md:text-4xl">{% trans 'Simple plans, clear limits' %}</h2>
+          </div>
+          <p class="mt-3 text-base-content/70">
+            {% trans 'Every account starts on Free. Admins can move users to Standard or Premium from the Django admin user page.' %}
+          </p>
+        </div>
+        <div class="mt-8 grid gap-4 md:grid-cols-3">
+          {% for quote in storage_quotes %}
+            <div class="rounded-lg border {% if quote.is_default %}border-primary bg-primary/10{% else %}border-base-300 bg-base-100{% endif %} p-6 shadow-sm">
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <h3 class="text-xl font-bold">{{ quote.name }}</h3>
+                  <p class="mt-2 text-sm text-base-content/60">
+                    {% if quote.is_default %}
+                      {% trans 'Default plan for new users' %}
+                    {% else %}
+                      {% trans 'Admin-managed upgrade' %}
+                    {% endif %}
+                  </p>
+                </div>
+                <span class="grid h-11 w-11 place-items-center rounded-lg {% if quote.is_default %}bg-primary text-primary-content{% else %}bg-secondary/10 text-secondary{% endif %}">
+                  <i data-lucide="{% if quote.is_default %}sparkles{% else %}hard-drive{% endif %}" class="h-5 w-5"></i>
+                </span>
+              </div>
+              <div class="mt-6">
+                <span class="text-4xl font-bold">{{ quote.quota_bytes|human_bytes }}</span>
+                <span class="text-sm text-base-content/60">{% trans 'storage quota' %}</span>
+              </div>
+              <div class="mt-6 flex items-center gap-2 text-sm text-base-content/70">
+                <i data-lucide="shield-check" class="h-4 w-4 text-success"></i>
+                {% trans 'Hard upload limit enforced automatically' %}
+              </div>
+            </div>
+          {% empty %}
+            <div class="rounded-lg border border-base-300 bg-base-100 p-6 text-base-content/60 md:col-span-3">
+              {% trans 'Storage plans will appear after migrations are applied.' %}
+            </div>
+          {% endfor %}
         </div>
       </div>
     </section>
   </main>
+
+  <footer class="border-t border-base-300 bg-base-100">
+    <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 text-sm text-base-content/60 md:flex-row md:items-center md:justify-between lg:px-8">
+      <div class="flex items-center gap-2">
+        <span class="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-content">
+          <i data-lucide="box" class="h-4 w-4"></i>
+        </span>
+        <span>{% trans 'Simple File Server' %}</span>
+      </div>
+      <div class="flex gap-4">
+        <a class="hover:text-base-content" href="#features">{% trans 'Features' %}</a>
+        <a class="hover:text-base-content" href="#plans">{% trans 'Plans' %}</a>
+        {% if request.user.is_authenticated %}
+          <a class="hover:text-base-content" href="{% url 'files-index' %}">{% trans 'File Explorer' %}</a>
+        {% else %}
+          <a class="hover:text-base-content" href="{% url 'user-signup' %}">{% trans 'Get started' %}</a>
+        {% endif %}
+      </div>
+    </div>
+  </footer>
 
   <script>
     (function () {

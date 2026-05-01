@@ -164,6 +164,7 @@ handler500 = 'files.errors.ErrorView500'
 
 MAX_FILESIZE = 10  # in MB
 FILE_SHARE_EXPIRE_HOURS = 24
+DEFAULT_STORAGE_QUOTA_BYTES = 1024 * 1024 * 1024  # 1 GiB
 MEDIA_ROOT = os.path.join(BASE_DIR, '../media')
 # TORRENTS_DOWNLOADS_ROOT = os.path.join(MEDIA_ROOT, './torrents/downloads')
 # MEDIA_FILES_EXT = ['.pdf', '.jpeg', '.jpg', '.png', ]
