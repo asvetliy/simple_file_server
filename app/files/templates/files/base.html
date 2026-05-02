@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
-  <title>{% trans 'Simple File Server' %}{% if title_category %} - {{ title_category }}{% endif %}</title>
+  <title>{% trans 'Simple Drive' %}{% if title_category %} - {{ title_category }}{% endif %}</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/apple-icon.png' %}">
@@ -78,7 +78,7 @@
         <div class="flex-1">
           <a href="{% url 'home' %}" class="btn btn-ghost gap-3 text-xl font-semibold">
             <span class="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-content shadow-sm">S</span>
-            {% trans 'Simple File Server' %}
+            {% trans 'Simple Drive' %}
           </a>
         </div>
         <label class="swap swap-rotate btn btn-square btn-ghost" aria-label="{% trans 'Toggle theme' %}">

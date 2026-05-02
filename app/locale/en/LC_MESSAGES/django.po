@@ -36,7 +36,7 @@ msgstr ""
 
 #: files/templates/files/base.html:7
 msgid "FILES_TITLE"
-msgstr "Simple File Server"
+msgstr "Simple Drive"
 
 #: files/templates/files/base.html:53
 msgid "FILES_NAVBAR_UPLOAD"
@@ -52,7 +52,7 @@ msgstr "/"
 
 #: files/templates/files/base.html:123
 msgid "FILES_FOOTER_COMPANY_TEXT"
-msgstr "Simple File Server"
+msgstr "Simple Drive"
 
 #: files/templates/files/base.html:128
 msgid ""
@@ -71,7 +71,7 @@ msgstr "SFS"
 
 #: files/templates/files/blocks/sidebar.html:8
 msgid "FILES_SIDEBAR_LOGO_NORMAL"
-msgstr "Simple File Server"
+msgstr "Simple Drive"
 
 #: files/templates/files/blocks/sidebar.html:24
 msgid "FILES_SIDEBAR_LOGOUT_MINI"
@@ -225,11 +225,11 @@ msgstr ""
 
 #: users/templates/users/base.html:12
 msgid "USERS_BASE_TITLE"
-msgstr "Simple File Server"
+msgstr "Simple Drive"
 
 #: users/templates/users/base.html:31
 msgid "USERS_NAVBAR_COMPANY_NAME"
-msgstr "Simple File Server"
+msgstr "Simple Drive"
 
 #: users/templates/users/base.html:44
 msgid "USERS_NAVBAR_LOGIN"

@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% trans 'Simple File Server' %}{% if title %} - {{ title }}{% endif %}</title>
+  <title>{% trans 'Simple Drive' %}{% if title %} - {{ title }}{% endif %}</title>
   <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/apple-icon.png' %}">
   <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
   <script>
@@ -33,7 +33,7 @@
       <div class="w-full max-w-md">
         <a href="{% url 'home' %}" class="mb-8 flex items-center gap-3 text-2xl font-bold">
           <span class="grid h-11 w-11 place-items-center rounded-2xl bg-primary text-primary-content shadow-sm">S</span>
-          {% trans 'Simple File Server' %}
+          {% trans 'Simple Drive' %}
         </a>
         {% block content %}{% endblock %}
       </div>
