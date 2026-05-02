@@ -54,6 +54,50 @@
     </div>
   </div>
 
+  <section class="rounded-box border border-base-300 bg-base-100/90 p-6 shadow-sm">
+    <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="max-w-2xl">
+        <p class="flex items-center gap-2 text-sm font-medium uppercase text-primary">
+          <i data-lucide="hard-drive" class="h-4 w-4"></i>
+          {% trans 'Storage plan' %}
+        </p>
+        <h2 class="mt-2 text-3xl font-bold">
+          {% if storage_quote %}{{ storage_quote.name }}{% else %}{% trans 'Default storage' %}{% endif %}
+        </h2>
+        <p class="mt-3 text-base-content/70">
+          {% blocktrans with used=storage_used_bytes|human_bytes quota=storage_quota_bytes|human_bytes remaining=storage_remaining_bytes|human_bytes %}
+            You are using {{ used }} of {{ quota }}. {{ remaining }} remains available.
+          {% endblocktrans %}
+        </p>
+      </div>
+      <div class="w-full max-w-md">
+        <div class="mb-2 flex items-center justify-between text-sm">
+          <span>{% trans 'Usage' %}</span>
+          <span class="font-semibold">{{ storage_usage_percent }}%</span>
+        </div>
+        <progress class="progress {% if storage_usage_percent >= 95 %}progress-error{% elif storage_usage_percent >= 80 %}progress-warning{% else %}progress-success{% endif %} h-4 w-full"
+                  value="{{ storage_usage_percent }}"
+                  max="100"></progress>
+        <div class="mt-3 grid grid-cols-3 gap-2 text-center text-xs text-base-content/60">
+          <span>{% trans '0%' %}</span>
+          <span>{% trans '80% warning' %}</span>
+          <span>{% trans '95% critical' %}</span>
+        </div>
+      </div>
+    </div>
+    {% if storage_usage_percent >= 95 %}
+      <div class="alert alert-error mt-6">
+        <i data-lucide="triangle-alert" class="h-5 w-5"></i>
+        <span>{% trans 'Storage is critically full. Delete files permanently or ask an admin to upgrade your plan.' %}</span>
+      </div>
+    {% elif storage_usage_percent >= 80 %}
+      <div class="alert alert-warning mt-6">
+        <i data-lucide="circle-alert" class="h-5 w-5"></i>
+        <span>{% trans 'Storage is getting full. Consider cleaning up Trash or upgrading your plan soon.' %}</span>
+      </div>
+    {% endif %}
+  </section>
+
   <div class="grid gap-4 lg:grid-cols-3">
     <section class="rounded-box border border-base-300 bg-base-100/90 shadow-sm">
       <div class="border-b border-base-300 p-5">

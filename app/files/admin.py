@@ -2,15 +2,27 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
 
+from .formaters import HumanBytes
 from .models import File, FileShare, Folder, StorageQuote
 
 
 @admin.register(StorageQuote)
 class StorageQuoteAdmin(admin.ModelAdmin):
-    list_display = ('name', 'quota_bytes', 'is_default', 'created_at',)
+    list_display = ('name', 'quota_display', 'users_count', 'is_default', 'created_at',)
     search_fields = ('name',)
     list_filter = ('is_default',)
     ordering = ('quota_bytes', 'name',)
+
+    def quota_display(self, obj):
+        return HumanBytes.format(obj.quota_bytes, True, 2)
+
+    quota_display.short_description = 'quota'
+    quota_display.admin_order_field = 'quota_bytes'
+
+    def users_count(self, obj):
+        return obj.users.count()
+
+    users_count.short_description = 'users'
 
 
 @admin.register(Folder)
