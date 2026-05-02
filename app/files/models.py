@@ -1,6 +1,7 @@
 from os.path import splitext
 
 from django.db import models
+from django.db.models import Q
 from django.conf import settings
 from django.urls import reverse
 from django.utils.crypto import get_random_string
@@ -34,22 +35,25 @@ class Folder(models.Model):
     parent = models.ForeignKey('self', models.CASCADE, blank=True, null=True, related_name='children')
     name = models.CharField(max_length=128)
     created_at = models.DateTimeField(auto_now_add=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.name
 
     @property
     def total_folder_count(self):
-        return sum(1 + child.total_folder_count for child in self.children.all())
+        return sum(1 + child.total_folder_count for child in self.children.filter(deleted_at__isnull=True))
 
     @property
     def total_file_count(self):
-        return self.files.count() + sum(child.total_file_count for child in self.children.all())
+        return self.files.filter(deleted_at__isnull=True).count() + sum(
+            child.total_file_count for child in self.children.filter(deleted_at__isnull=True)
+        )
 
     @property
     def total_size(self):
-        files_size = sum(file.file.size for file in self.files.all() if file.file)
-        return files_size + sum(child.total_size for child in self.children.all())
+        files_size = sum(file.file.size for file in self.files.filter(deleted_at__isnull=True) if file.file)
+        return files_size + sum(child.total_size for child in self.children.filter(deleted_at__isnull=True))
 
     class Meta:
         db_table = 'folders'
@@ -58,6 +62,7 @@ class Folder(models.Model):
             models.UniqueConstraint(
                 fields=('user', 'parent', 'name'),
                 name='unique_folder_name_per_parent',
+                condition=Q(deleted_at__isnull=True),
             ),
         ]
 
@@ -73,6 +78,7 @@ class File(models.Model):
     folder = models.ForeignKey(Folder, models.CASCADE, blank=True, null=True, related_name='files')
     created_at = models.DateTimeField(auto_now_add=True)
     old_file_name = models.CharField(max_length=128, blank=False, null=False)
+    deleted_at = models.DateTimeField(blank=True, null=True)
     file = models.FileField(
         upload_to=user_directory_path,
         blank=False,

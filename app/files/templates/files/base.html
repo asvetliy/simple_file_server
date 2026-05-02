@@ -40,6 +40,19 @@
       <button>{% trans 'Close' %}</button>
     </form>
   </dialog>
+  <dialog id="item-modal" class="modal">
+    <div class="modal-box max-w-xl border border-base-300 bg-base-100 shadow-2xl">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-3 top-3" aria-label="{% trans 'Close' %}">
+          <i data-lucide="x" class="h-4 w-4"></i>
+        </button>
+      </form>
+      <div id="item-modal-content"></div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>{% trans 'Close' %}</button>
+    </form>
+  </dialog>
   <dialog id="confirm-modal" class="modal">
     <div class="modal-box border border-base-300 bg-base-100 shadow-2xl">
       <div class="flex items-start gap-4">
@@ -209,6 +222,15 @@
         if (event.detail.target && event.detail.target.id === 'share-modal-content') {
           initShareModal();
           document.getElementById('share-modal')?.showModal();
+        }
+        if (event.detail.target && event.detail.target.id === 'item-modal-content') {
+          document.getElementById('item-modal')?.showModal();
+        }
+      });
+
+      document.body.addEventListener('htmx:afterRequest', function (event) {
+        if (event.detail.successful && event.target?.matches('[data-close-modal]')) {
+          document.getElementById(event.target.dataset.closeModal)?.close();
         }
       });
 

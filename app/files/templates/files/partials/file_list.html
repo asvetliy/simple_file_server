@@ -1,5 +1,5 @@
 {% load i18n simple_tags %}
-<section id="files-panel" class="rounded-box border border-base-300 bg-base-100/90 shadow-sm backdrop-blur">
+<section id="files-panel" {% if file_list_oob %}hx-swap-oob="true"{% endif %} class="rounded-box border border-base-300 bg-base-100/90 shadow-sm backdrop-blur">
   <div class="flex flex-col gap-3 border-b border-base-300 p-4 md:flex-row md:items-center md:justify-between">
     <div class="breadcrumbs max-w-full overflow-x-auto text-sm">
       <ul>
@@ -104,12 +104,30 @@
                      title="{% trans 'Open' %}">
                     <i data-lucide="folder-open" class="h-4 w-4"></i>
                   </a>
+                  <button class="btn btn-sm btn-outline btn-square"
+                          type="button"
+                          hx-get="{% url 'folder-rename' folder.id %}{% if current_folder %}?folder={{ current_folder.id }}{% endif %}"
+                          hx-target="#item-modal-content"
+                          hx-swap="innerHTML"
+                          aria-label="{% trans 'Rename' %}"
+                          title="{% trans 'Rename' %}">
+                    <i data-lucide="pencil" class="h-4 w-4"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline btn-square"
+                          type="button"
+                          hx-get="{% url 'folder-move' folder.id %}{% if current_folder %}?folder={{ current_folder.id }}{% endif %}"
+                          hx-target="#item-modal-content"
+                          hx-swap="innerHTML"
+                          aria-label="{% trans 'Move' %}"
+                          title="{% trans 'Move' %}">
+                    <i data-lucide="folder-input" class="h-4 w-4"></i>
+                  </button>
                   <form method="post"
                         action="{% url 'folder-delete' folder.id %}"
                         hx-post="{% url 'folder-delete' folder.id %}"
                         hx-target="#files-panel"
                         hx-swap="outerHTML"
-                        hx-confirm="{% trans 'Delete this folder and everything inside it?' %}">
+                        hx-confirm="{% trans 'Move this folder and everything inside it to trash?' %}">
                     {% csrf_token %}
                     {% if current_folder %}
                       <input type="hidden" name="folder" value="{{ current_folder.id }}">
@@ -166,10 +184,31 @@
                         hx-target="#share-modal-content"
                         hx-swap="innerHTML">
                     {% csrf_token %}
+                    {% if current_folder %}
+                      <input type="hidden" name="folder" value="{{ current_folder.id }}">
+                    {% endif %}
                     <button class="btn btn-sm btn-outline btn-secondary btn-square" type="submit" aria-label="{% trans 'Share' %}" title="{% trans 'Share' %}">
                       <i data-lucide="share-2" class="h-4 w-4"></i>
                     </button>
                   </form>
+                  <button class="btn btn-sm btn-outline btn-square"
+                          type="button"
+                          hx-get="{% url 'files-rename' file.id %}{% if current_folder %}?folder={{ current_folder.id }}{% endif %}"
+                          hx-target="#item-modal-content"
+                          hx-swap="innerHTML"
+                          aria-label="{% trans 'Rename' %}"
+                          title="{% trans 'Rename' %}">
+                    <i data-lucide="pencil" class="h-4 w-4"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline btn-square"
+                          type="button"
+                          hx-get="{% url 'files-move' file.id %}{% if current_folder %}?folder={{ current_folder.id }}{% endif %}"
+                          hx-target="#item-modal-content"
+                          hx-swap="innerHTML"
+                          aria-label="{% trans 'Move' %}"
+                          title="{% trans 'Move' %}">
+                    <i data-lucide="folder-input" class="h-4 w-4"></i>
+                  </button>
                   <a class="btn btn-sm btn-outline btn-primary btn-square" href="{% url 'files-download' file.id %}" aria-label="{% trans 'Download' %}" title="{% trans 'Download' %}">
                     <i data-lucide="download" class="h-4 w-4"></i>
                   </a>
@@ -178,7 +217,7 @@
                         hx-post="{% url 'files-delete' file.id %}"
                         hx-target="#files-panel"
                         hx-swap="outerHTML"
-                        hx-confirm="{% trans 'Delete this file?' %}">
+                        hx-confirm="{% trans 'Move this file to trash?' %}">
                     {% csrf_token %}
                     {% if current_folder %}
                       <input type="hidden" name="folder" value="{{ current_folder.id }}">

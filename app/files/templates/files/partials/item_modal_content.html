@@ -1,0 +1,37 @@
+{% load i18n %}
+<div class="space-y-5">
+  <div>
+    <p class="text-sm font-medium uppercase text-primary">{% trans 'File Explorer' %}</p>
+    <h2 class="mt-1 flex items-center gap-2 text-2xl font-bold">
+      <i data-lucide="{{ icon }}" class="h-6 w-6 text-primary"></i>
+      {{ action }}
+    </h2>
+    <p class="mt-2 break-words text-sm text-base-content/60">
+      {{ item_name }}
+    </p>
+  </div>
+
+  <form class="space-y-4"
+        method="post"
+        action="{% url post_url post_url_arg %}"
+        hx-post="{% url post_url post_url_arg %}"
+        hx-target="#files-panel"
+        hx-swap="outerHTML"
+        data-close-modal="item-modal">
+    {% csrf_token %}
+    {% if current_folder %}
+      <input type="hidden" name="folder" value="{{ current_folder.id }}">
+    {% endif %}
+    {{ form.as_p }}
+    <div class="modal-action">
+      <button class="btn btn-ghost" type="button" onclick="document.getElementById('item-modal')?.close()">
+        <i data-lucide="x" class="h-4 w-4"></i>
+        {% trans 'Cancel' %}
+      </button>
+      <button class="btn btn-primary gap-2" type="submit">
+        <i data-lucide="check" class="h-4 w-4"></i>
+        {{ submit_label }}
+      </button>
+    </div>
+  </form>
+</div>
