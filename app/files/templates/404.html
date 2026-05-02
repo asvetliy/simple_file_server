@@ -1,86 +1,43 @@
 {% load static i18n %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
+  <title>{% trans 'Simple Drive' %} - {% trans 'Page not found' %}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/apple-icon.png' %}">
   <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <title>
-    404 Not Found Error Page
-  </title>
-  <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
-  <!--     Fonts and icons     -->
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-  <!-- CSS Files -->
-  <link href="{% static 'css/material-dashboard.min.css' %}" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.24/dist/full.min.css" rel="stylesheet" type="text/css">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-
-<body class="off-canvas-sidebar">
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top text-white">
-    <div class="container">
-      <div class="navbar-wrapper">
-        <a class="navbar-brand" href="javascript:;">Error Page</a>
+<body class="min-h-screen bg-base-200 text-base-content">
+  <main class="grid min-h-screen place-items-center px-4 py-12">
+    <section class="w-full max-w-lg rounded-lg border border-base-300 bg-base-100 p-8 text-center shadow-xl">
+      <div class="mx-auto grid h-16 w-16 place-items-center rounded-lg bg-primary/10 text-primary">
+        <i data-lucide="map-off" class="h-8 w-8"></i>
       </div>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="navbar-toggler-icon icon-bar"></span>
-        <span class="navbar-toggler-icon icon-bar"></span>
-        <span class="navbar-toggler-icon icon-bar"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a href="/" class="nav-link">
-              <i class="material-icons">dashboard</i>
-              Dashboard
-            </a>
-          </li>
-          <li class="nav-item ">
-            <a href="{% url 'user-login' %}" class="nav-link">
-              <i class="material-icons">fingerprint</i>
-              Login
-            </a>
-          </li>
-        </ul>
+      <p class="mt-6 text-sm font-semibold uppercase text-primary">404</p>
+      <h1 class="mt-2 text-4xl font-bold">{% trans 'Page not found' %}</h1>
+      <p class="mt-4 text-base-content/70">
+        {% trans 'The page you are looking for does not exist or has moved.' %}
+      </p>
+      <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+        <a class="btn btn-primary gap-2" href="{% url 'home' %}">
+          <i data-lucide="home" class="h-4 w-4"></i>
+          {% trans 'Go home' %}
+        </a>
+        <a class="btn btn-outline gap-2" href="{% url 'files-index' %}">
+          <i data-lucide="files" class="h-4 w-4"></i>
+          {% trans 'File Explorer' %}
+        </a>
       </div>
-    </div>
-  </nav>
-  <!-- End Navbar -->
-  <div class="wrapper wrapper-full-page">
-    <div class="page-header error-page header-filter" style="background-image: url('{% static "img/clint-mckoy.jpg" %}')">
-      <div class="content-center">
-        <div class="row">
-          <div class="col-md-12">
-            <h1 class="title">404</h1>
-            <h2>Page not found :(</h2>
-            <h4>Ooooups! Looks like you got lost.</h4>
-          </div>
-        </div>
-      </div>
-      <footer class="footer">
-        <div class="container">
-          <div class="copyright float-right">
-          {% blocktrans %}
-          &copy;
-          <script>document.write(new Date().getFullYear().toString())</script>
-          <a href="/" target="_blank">SimpleFileServer</a> All Rights Reserved
-          {% endblocktrans %}
-        </div>
-        </div>
-      </footer>
-    </div>
-  </div>
-  <!--   Core JS Files   -->
-  <script src="{% static 'js/core/jquery.min.js' %}" type="application/javascript"></script>
-  <script src="{% static 'js/core/popper.min.js' %}" type="application/javascript"></script>
-  <script src="{% static 'js/core/bootstrap-material-design.min.js' %}" type="application/javascript"></script>
-  <script src="{% static 'js/plugins/perfect-scrollbar.jquery.min.js' %}"></script>
-  <!-- Include a polyfill for ES6 Promises (optional) for IE11, UC Browser and Android browser support SweetAlert -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
+    </section>
+  </main>
+  <script>
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  </script>
 </body>
-
 </html>
