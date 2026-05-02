@@ -24,11 +24,13 @@
       <i data-lucide="files" class="h-4 w-4"></i>
       <span>File Explorer</span>
     </a>
-  </li>
-  <li>
-    <a href="{% url 'files-trash' %}" class="{% if title_category == 'Trash' %}active {% endif %}font-medium">
-      <i data-lucide="trash-2" class="h-4 w-4"></i>
-      <span>Trash</span>
-    </a>
+    <ul>
+      <li>
+        <a href="{% url 'files-trash' %}" class="{% if title_category == 'Trash' %}active {% endif %}font-medium">
+          <i data-lucide="trash-2" class="h-4 w-4"></i>
+          <span>Trash</span>
+        </a>
+      </li>
+    </ul>
   </li>
 </ul>
