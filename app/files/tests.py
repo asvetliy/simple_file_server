@@ -132,6 +132,7 @@ class FileViewsTests(TestCase):
         self.assertGreater(share.expires_at, timezone.now())
         self.assertContains(response, reverse('public-share', args=[share.token]))
         self.assertContains(response, 'data-qr-url')
+        self.assertContains(response, 'data-copy-url')
 
     def test_share_response_refreshes_file_list_with_unshare_button(self):
         self.client.force_login(self.user)
@@ -143,6 +144,8 @@ class FileViewsTests(TestCase):
         self.assertContains(response, 'id="files-panel"')
         self.assertContains(response, 'hx-swap-oob="true"')
         self.assertContains(response, reverse('files-unshare', args=[file.id]))
+        self.assertContains(response, 'data-copy-url')
+        self.assertContains(response, 'data-expire-countdown')
 
     def test_share_reuses_existing_active_share(self):
         self.client.force_login(self.user)
@@ -213,6 +216,8 @@ class FileViewsTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, reverse('files-unshare', args=[file.id]))
+        self.assertContains(response, reverse('public-share', args=[file.shares.first().token]))
+        self.assertContains(response, 'data-expire-countdown')
 
     def test_row_unshare_refresh_hides_button_when_share_removed(self):
         self.client.force_login(self.user)

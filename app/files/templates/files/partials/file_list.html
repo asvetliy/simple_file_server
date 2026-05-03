@@ -141,6 +141,7 @@
             </tr>
           {% endfor %}
           {% for file in files %}
+            {% with active_share=file.active_share %}
             <tr class="hover">
               <td>
                 <div class="flex items-center gap-3">
@@ -149,10 +150,20 @@
                   </div>
                   <div>
                     <p class="font-medium">{{ file.old_file_name }}</p>
-                    <p class="mt-1 inline-flex items-center gap-1 text-xs text-base-content/60">
-                      <i data-lucide="hard-drive" class="h-3.5 w-3.5"></i>
-                      {{ file.file.size|human_bytes }}
-                    </p>
+                    <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-base-content/60">
+                      <span class="inline-flex items-center gap-1">
+                        <i data-lucide="hard-drive" class="h-3.5 w-3.5"></i>
+                        {{ file.file.size|human_bytes }}
+                      </span>
+                      {% if active_share %}
+                        <span class="inline-flex items-center gap-1 rounded-full bg-secondary/10 px-2 py-0.5 font-medium text-secondary"
+                              data-expire-countdown
+                              data-expires-at="{{ active_share.expires_at|date:'c' }}">
+                          <i data-lucide="clock-3" class="h-3.5 w-3.5"></i>
+                          <span data-countdown-label>{% trans 'Shared' %}</span>
+                        </span>
+                      {% endif %}
+                    </div>
                   </div>
                 </div>
               </td>
@@ -162,7 +173,7 @@
               <td>{{ file.created_at|date:"Y-m-d H:i" }}</td>
               <td>
                 <div class="flex justify-end gap-2">
-                  {% if file.active_share %}
+                  {% if active_share %}
                     <form method="post"
                           action="{% url 'files-unshare' file.id %}"
                           hx-post="{% url 'files-unshare' file.id %}"
@@ -229,6 +240,7 @@
                 </div>
               </td>
             </tr>
+            {% endwith %}
           {% endfor %}
         </tbody>
       </table>

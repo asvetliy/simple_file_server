@@ -24,11 +24,27 @@
       <div class="space-y-3">
         <label class="form-control">
           <span class="label-text mb-1">{% trans 'Share page' %}</span>
-          <input class="input input-bordered w-full" value="{{ public_url }}" readonly>
+          <div class="join w-full">
+            <input class="input input-bordered join-item w-full" value="{{ public_url }}" readonly>
+            <button class="btn btn-outline join-item gap-2"
+                    type="button"
+                    data-copy-url="{{ public_url }}">
+              <i data-lucide="copy" class="h-4 w-4"></i>
+              {% trans 'Copy' %}
+            </button>
+          </div>
         </label>
         <label class="form-control">
           <span class="label-text mb-1">{% trans 'Direct download' %}</span>
-          <input class="input input-bordered w-full" value="{{ download_url }}" readonly>
+          <div class="join w-full">
+            <input class="input input-bordered join-item w-full" value="{{ download_url }}" readonly>
+            <button class="btn btn-outline join-item gap-2"
+                    type="button"
+                    data-copy-url="{{ download_url }}">
+              <i data-lucide="copy" class="h-4 w-4"></i>
+              {% trans 'Copy' %}
+            </button>
+          </div>
         </label>
         <div class="flex flex-wrap gap-2">
           <a class="btn btn-primary gap-2" href="{{ public_url }}" target="_blank" rel="noopener">
