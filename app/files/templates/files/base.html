@@ -144,12 +144,129 @@
   </div>
   <script>
     (function () {
+      function formatBytes(bytes) {
+        if (!bytes) {
+          return '0 B';
+        }
+        const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+        return (bytes / Math.pow(1024, index)).toFixed(index === 0 ? 0 : 1) + ' ' + units[index];
+      }
+
+      function getFileIcon(fileName) {
+        const extension = fileName.split('.').pop().toLowerCase();
+        if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(extension)) {
+          return 'image';
+        }
+        if (['zip', 'rar', '7z', 'tar', 'gz'].includes(extension)) {
+          return 'archive';
+        }
+        if (['pdf'].includes(extension)) {
+          return 'file-text';
+        }
+        if (['mp4', 'mov', 'avi', 'mkv', 'webm'].includes(extension)) {
+          return 'video';
+        }
+        if (['mp3', 'wav', 'flac', 'aac'].includes(extension)) {
+          return 'music';
+        }
+        return 'file';
+      }
+
+      function setInputFiles(input, files) {
+        const transfer = new DataTransfer();
+        files.forEach(function (file) {
+          transfer.items.add(file);
+        });
+        input.files = transfer.files;
+      }
+
+      function initUploadPreview(form) {
+        const input = form.querySelector('[data-upload-input]');
+        const dropzone = form.querySelector('[data-upload-dropzone]');
+        const previewWrap = form.querySelector('[data-upload-preview-wrap]');
+        const preview = form.querySelector('[data-upload-preview]');
+        const summary = form.querySelector('[data-upload-summary]');
+        const clearButton = form.querySelector('[data-upload-clear]');
+        if (!input || !dropzone || !previewWrap || !preview || !summary) {
+          return;
+        }
+
+        function renderPreview() {
+          const files = Array.from(input.files || []);
+          preview.innerHTML = '';
+          if (!files.length) {
+            previewWrap.classList.add('hidden');
+            summary.textContent = '';
+            return;
+          }
+          const totalBytes = files.reduce(function (sum, file) {
+            return sum + file.size;
+          }, 0);
+          previewWrap.classList.remove('hidden');
+          summary.textContent = files.length + ' file(s), ' + formatBytes(totalBytes) + ' total';
+          files.forEach(function (file, index) {
+            const row = document.createElement('div');
+            row.className = 'flex items-center gap-3 rounded-box border border-base-300 bg-base-100 p-3 shadow-sm';
+            row.innerHTML = '<span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/15">' +
+              '<i data-lucide="' + getFileIcon(file.name) + '" class="h-5 w-5"></i></span>' +
+              '<span class="min-w-0 flex-1"><span class="block truncate text-sm font-medium"></span>' +
+              '<span class="mt-0.5 block text-xs text-base-content/60" data-preview-size></span></span>' +
+              '<button class="btn btn-ghost btn-xs btn-square shrink-0" type="button" aria-label="Remove file">' +
+              '<i data-lucide="x" class="h-3.5 w-3.5"></i></button>';
+            row.querySelector('.font-medium').textContent = file.name;
+            row.querySelector('[data-preview-size]').textContent = formatBytes(file.size);
+            row.querySelector('button').addEventListener('click', function () {
+              const nextFiles = Array.from(input.files || []).filter(function (_file, fileIndex) {
+                return fileIndex !== index;
+              });
+              setInputFiles(input, nextFiles);
+              renderPreview();
+            });
+            preview.appendChild(row);
+          });
+          if (window.lucide) {
+            window.lucide.createIcons();
+          }
+        }
+
+        input.addEventListener('change', renderPreview);
+        clearButton?.addEventListener('click', function () {
+          input.value = '';
+          renderPreview();
+        });
+
+        ['dragenter', 'dragover'].forEach(function (eventName) {
+          dropzone.addEventListener(eventName, function (event) {
+            event.preventDefault();
+            dropzone.classList.add('border-primary', 'bg-primary/10', 'scale-[1.01]');
+          });
+        });
+        ['dragleave', 'drop'].forEach(function (eventName) {
+          dropzone.addEventListener(eventName, function (event) {
+            event.preventDefault();
+            dropzone.classList.remove('border-primary', 'bg-primary/10', 'scale-[1.01]');
+          });
+        });
+        dropzone.addEventListener('drop', function (event) {
+          const files = Array.from(event.dataTransfer?.files || []);
+          if (!files.length) {
+            return;
+          }
+          setInputFiles(input, files);
+          renderPreview();
+        });
+      }
+
       window.initDriveBrowser = function () {
         document.querySelectorAll('#file-upload-form:not([data-drive-ready])').forEach(function (form) {
           form.dataset.driveReady = 'true';
+          initUploadPreview(form);
           form.addEventListener('htmx:afterRequest', function (event) {
-            if (event.detail.successful) {
+            const status = event.detail.xhr?.status || 0;
+            if (event.detail.successful && status >= 200 && status < 300) {
               form.reset();
+              form.querySelector('[data-upload-input]')?.dispatchEvent(new Event('change'));
               document.getElementById('upload_modal')?.close();
             }
           });
@@ -306,6 +423,15 @@
         confirmModal.showModal();
         if (window.lucide) {
           window.lucide.createIcons();
+        }
+      });
+
+      document.body.addEventListener('htmx:beforeSwap', function (event) {
+        const status = event.detail.xhr?.status || 0;
+        const response = event.detail.xhr?.responseText || '';
+        if ((status === 400 || status === 422) && response.includes('hx-swap-oob')) {
+          event.detail.shouldSwap = true;
+          event.detail.isError = false;
         }
       });
 

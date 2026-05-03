@@ -11,7 +11,9 @@ def validate_file(instance):
 
     if file_size > max_file_size * 1024 * 1024:
         raise ValidationError(
-            _('The maximum file size that can be uploaded is %d(max_file_size)MB') % max_file_size)
+            _('The maximum file size that can be uploaded is %(max_size)d MB.') % {
+                'max_size': max_file_size,
+            })
 
     # name, extension = splitext(instance.name)
     # if extension not in settings.MEDIA_FILES_EXT:

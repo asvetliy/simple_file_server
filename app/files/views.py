@@ -238,9 +238,10 @@ class FilesUploadView(LoginRequiredMixin, View):
                 used_bytes += uploaded_file.size
                 created += 1
             else:
+                file_errors = form.errors.get('file')
                 messages.error(request, _('Could not upload %(name)s: %(error)s') % {
                     'name': uploaded_file.name,
-                    'error': form.errors.as_text(),
+                    'error': ' '.join(file_errors) if file_errors else form.errors.as_text(),
                 })
 
         if created:

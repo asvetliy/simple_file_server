@@ -78,11 +78,40 @@
         {% if current_folder %}
           <input type="hidden" name="folder" value="{{ current_folder.id }}">
         {% endif %}
-        <input id="id_file"
-               type="file"
-               name="file"
-               multiple
-               class="file-input file-input-bordered file-input-primary w-full">
+        <div class="rounded-box border border-dashed border-primary/40 bg-primary/5 p-4 transition"
+             data-upload-dropzone>
+          <label for="id_file" class="flex cursor-pointer flex-col items-center justify-center rounded-box border border-base-300 bg-base-100/80 px-6 py-10 text-center transition hover:border-primary hover:bg-primary/5">
+            <span class="grid h-14 w-14 place-items-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/15">
+              <i data-lucide="cloud-upload" class="h-7 w-7"></i>
+            </span>
+            <span class="mt-4 text-base font-semibold">{% trans 'Drop files here or click to browse' %}</span>
+            <span class="mt-1 text-sm text-base-content/60">
+              {% blocktrans with max_file_size=max_file_size %}You can select multiple files. Max {{ max_file_size }} MB each.{% endblocktrans %}
+            </span>
+          </label>
+          <input id="id_file"
+                 type="file"
+                 name="file"
+                 multiple
+                 class="sr-only"
+                 data-upload-input>
+        </div>
+        <div class="hidden rounded-box border border-base-300 bg-base-200/60 p-3"
+             data-upload-preview-wrap>
+          <div class="mb-3 flex items-center justify-between gap-3">
+            <div>
+              <p class="text-sm font-semibold">{% trans 'Selected files' %}</p>
+              <p class="text-xs text-base-content/60" data-upload-summary></p>
+            </div>
+            <button class="btn btn-ghost btn-xs gap-1"
+                    type="button"
+                    data-upload-clear>
+              <i data-lucide="x" class="h-3.5 w-3.5"></i>
+              {% trans 'Clear' %}
+            </button>
+          </div>
+          <div class="max-h-52 space-y-2 overflow-y-auto pr-1" data-upload-preview></div>
+        </div>
         <div class="modal-action">
           <button class="btn btn-primary gap-2" type="submit">
             <i data-lucide="upload" class="h-4 w-4"></i>

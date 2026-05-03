@@ -71,6 +71,9 @@ class FileViewsTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertFalse(File.objects.filter(user=self.user).exists())
+        self.assertContains(response, 'Could not upload large.txt', status_code=400)
+        self.assertContains(response, 'maximum file size', status_code=400)
+        self.assertContains(response, 'hx-swap-oob', status_code=400)
 
     def test_upload_rejects_file_when_storage_quota_is_exceeded(self):
         quote = StorageQuote.objects.create(name='Tiny', quota_bytes=8)
@@ -216,8 +219,8 @@ class FileViewsTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, reverse('files-unshare', args=[file.id]))
-        self.assertContains(response, reverse('public-share', args=[file.shares.first().token]))
         self.assertContains(response, 'data-expire-countdown')
+        self.assertNotContains(response, 'data-copy-url')
 
     def test_row_unshare_refresh_hides_button_when_share_removed(self):
         self.client.force_login(self.user)
@@ -481,6 +484,8 @@ class FileViewsTests(TestCase):
         self.assertContains(create_response, 'Projects')
         self.assertContains(browse_response, 'Projects')
         self.assertContains(browse_response, 'Upload files')
+        self.assertContains(browse_response, 'data-upload-dropzone')
+        self.assertContains(browse_response, 'data-upload-preview')
 
     def test_upload_into_folder_only_appears_in_that_folder(self):
         self.client.force_login(self.user)
