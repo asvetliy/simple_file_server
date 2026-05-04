@@ -35,7 +35,11 @@
                 </div>
               </td>
               <td><span class="badge badge-warning badge-outline">{% trans 'Folder' %}</span></td>
-              <td>{{ folder.deleted_at|date:"Y-m-d H:i" }}</td>
+              <td>
+                <time datetime="{{ folder.deleted_at|local_iso }}" data-local-datetime>
+                  {{ folder.deleted_at|local_datetime }}
+                </time>
+              </td>
               <td>
                 <div class="flex justify-end gap-2">
                   <form method="post"
@@ -80,7 +84,11 @@
                 </div>
               </td>
               <td><span class="badge badge-outline">{{ file.old_file_name|file_type_label }}</span></td>
-              <td>{{ file.deleted_at|date:"Y-m-d H:i" }}</td>
+              <td>
+                <time datetime="{{ file.deleted_at|local_iso }}" data-local-datetime>
+                  {{ file.deleted_at|local_datetime }}
+                </time>
+              </td>
               <td>
                 <div class="flex justify-end gap-2">
                   <form method="post"

@@ -8,6 +8,7 @@
   <title>{% trans 'Simple Drive' %}{% if title %} - {{ title }}{% endif %}</title>
   <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/apple-icon.png' %}">
   <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+  {% include 'includes/browser_timezone.html' %}
   <script>
     (function () {
       const savedTheme = localStorage.getItem('theme');

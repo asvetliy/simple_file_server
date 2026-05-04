@@ -1,0 +1,26 @@
+<script>
+  (function () {
+    const cookieName = 'simple_drive_timezone';
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (!timezone) {
+      return;
+    }
+
+    const currentCookie = document.cookie
+      .split('; ')
+      .find(function (row) {
+        return row.startsWith(cookieName + '=');
+      });
+    const currentTimezone = currentCookie ? decodeURIComponent(currentCookie.split('=').slice(1).join('=')) : '';
+    if (currentTimezone === timezone) {
+      sessionStorage.removeItem(cookieName + '_reload');
+      return;
+    }
+
+    document.cookie = cookieName + '=' + encodeURIComponent(timezone) + '; path=/; max-age=31536000; SameSite=Lax';
+    if (sessionStorage.getItem(cookieName + '_reload') !== timezone) {
+      sessionStorage.setItem(cookieName + '_reload', timezone);
+      window.location.reload();
+    }
+  })();
+</script>

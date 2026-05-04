@@ -1,6 +1,8 @@
 from os.path import splitext
 
 from django import template
+from django.utils.dateformat import format as date_format
+from django.utils import timezone
 
 from ..formaters import HumanBytes
 
@@ -29,3 +31,17 @@ def file_type_label(file_name: str):
     name, extension = splitext(file_name)
     extension = extension.replace('.', '').upper()
     return extension or 'FILE'
+
+
+@register.filter
+def local_datetime(value, fmt='Y-m-d H:i'):
+    if not value:
+        return ''
+    return date_format(timezone.localtime(value), fmt)
+
+
+@register.filter
+def local_iso(value):
+    if not value:
+        return ''
+    return timezone.localtime(value).isoformat()

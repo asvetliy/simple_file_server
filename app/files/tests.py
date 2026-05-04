@@ -1,12 +1,14 @@
 import shutil
 import tempfile
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone as datetime_timezone
 
-from django.test import Client, TestCase, override_settings
+from django.http import HttpResponse
+from django.test import Client, RequestFactory, TestCase, override_settings
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils import timezone
 
+from app.middleware import BrowserTimezoneMiddleware
 from users.models import User
 
 from .models import File, FileShare, Folder, StorageQuote
@@ -51,6 +53,35 @@ class FileViewsTests(TestCase):
             response = self.client.get(url)
             self.assertEqual(response.status_code, 302)
             self.assertIn(reverse('user-login'), response['Location'])
+
+    def test_browser_timezone_cookie_activates_request_timezone(self):
+        captured = {}
+
+        def get_response(request):
+            captured['timezone'] = timezone.get_current_timezone_name()
+            return HttpResponse('ok')
+
+        request = RequestFactory().get('/files')
+        request.COOKIES[BrowserTimezoneMiddleware.cookie_name] = 'America/Edmonton'
+
+        response = BrowserTimezoneMiddleware(get_response)(request)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(captured['timezone'], 'America/Edmonton')
+        self.assertEqual(timezone.get_current_timezone_name(), 'UTC')
+
+    def test_file_list_renders_datetimes_in_browser_timezone(self):
+        self.client.force_login(self.user)
+        file = self.make_file(name='local-time.txt')
+        file.created_at = datetime(2026, 1, 1, 12, 0, tzinfo=datetime_timezone.utc)
+        file.save(update_fields=['created_at'])
+        self.client.cookies[BrowserTimezoneMiddleware.cookie_name] = 'America/Edmonton'
+
+        response = self.client.get(reverse('files-list'), HTTP_HX_REQUEST='true')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '2026-01-01 05:00')
+        self.assertNotContains(response, '2026-01-01 12:00')
 
     def test_upload_accepts_valid_file(self):
         self.client.force_login(self.user)

@@ -7,6 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+  {% include 'includes/browser_timezone.html' %}
   <script>
     (function () {
       const savedTheme = localStorage.getItem('theme');
@@ -30,14 +31,15 @@
           <p class="text-sm font-medium uppercase text-primary">{% trans 'Shared file' %}</p>
           <h1 class="mt-1 break-words text-3xl font-bold">{{ file.old_file_name }}</h1>
           <p class="mt-2 text-sm text-base-content/60">
-            {% blocktrans with expires=share.expires_at|date:"Y-m-d H:i" %}Available until {{ expires }}.{% endblocktrans %}
+            {% trans 'Available until' %}
+            <time datetime="{{ share.expires_at|local_iso }}" data-local-datetime>{{ share.expires_at|local_datetime }}</time>.
           </p>
           <div class="mt-4 inline-flex items-center gap-2 rounded-box border border-warning/30 bg-warning/10 px-3 py-2 text-sm text-warning">
             <i data-lucide="timer" class="h-4 w-4"></i>
             <span>{% trans 'Expires in' %}</span>
             <span id="share-expire-timer"
                   class="font-mono font-semibold"
-                  data-expires-at="{{ share.expires_at|date:'c' }}">--:--:--</span>
+                  data-expires-at="{{ share.expires_at|local_iso }}">--:--:--</span>
           </div>
         </div>
       </div>
@@ -105,6 +107,22 @@
         window.setTimeout(renderTimer, 1000);
       }
       renderTimer();
+
+      function twoDigits(value) {
+        return value.toString().padStart(2, '0');
+      }
+
+      document.querySelectorAll('[data-local-datetime]').forEach(function (item) {
+        const date = new Date(item.getAttribute('datetime') || item.dataset.datetime);
+        if (Number.isNaN(date.getTime())) {
+          return;
+        }
+        item.textContent = date.getFullYear() + '-' +
+          twoDigits(date.getMonth() + 1) + '-' +
+          twoDigits(date.getDate()) + ' ' +
+          twoDigits(date.getHours()) + ':' +
+          twoDigits(date.getMinutes());
+      });
     });
   </script>
 </body>

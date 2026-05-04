@@ -111,7 +111,11 @@
                 <tr>
                   <td>
                     <p class="font-medium">{{ file.old_file_name }}</p>
-                    <p class="text-xs text-base-content/60">{{ file.created_at|date:"Y-m-d H:i" }}</p>
+                    <p class="text-xs text-base-content/60">
+                      <time datetime="{{ file.created_at|local_iso }}" data-local-datetime>
+                        {{ file.created_at|local_datetime }}
+                      </time>
+                    </p>
                   </td>
                   <td class="text-right">{{ file.file.size|human_bytes }}</td>
                 </tr>
@@ -136,7 +140,11 @@
                 <tr>
                   <td>
                     <p class="font-medium">{{ folder.name }}</p>
-                    <p class="text-xs text-base-content/60">{{ folder.created_at|date:"Y-m-d H:i" }}</p>
+                    <p class="text-xs text-base-content/60">
+                      <time datetime="{{ folder.created_at|local_iso }}" data-local-datetime>
+                        {{ folder.created_at|local_datetime }}
+                      </time>
+                    </p>
                   </td>
                   <td class="text-right">
                     <a class="btn btn-sm btn-outline btn-primary" href="{% url 'files-index' %}?folder={{ folder.id }}">{% trans 'Open' %}</a>

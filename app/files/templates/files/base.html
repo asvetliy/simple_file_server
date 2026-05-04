@@ -8,6 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/apple-icon.png' %}">
   <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+  {% include 'includes/browser_timezone.html' %}
   <script>
     (function () {
       const savedTheme = localStorage.getItem('theme');
@@ -390,6 +391,33 @@
         updateShareCountdowns();
       }
 
+      function twoDigits(value) {
+        return value.toString().padStart(2, '0');
+      }
+
+      function formatLocalDateTime(date) {
+        return date.getFullYear() + '-' +
+          twoDigits(date.getMonth() + 1) + '-' +
+          twoDigits(date.getDate()) + ' ' +
+          twoDigits(date.getHours()) + ':' +
+          twoDigits(date.getMinutes());
+      }
+
+      function initLocalDateTimes(root) {
+        const scope = root || document;
+        scope.querySelectorAll('[data-local-datetime]').forEach(function (item) {
+          const value = item.getAttribute('datetime') || item.dataset.datetime;
+          if (!value) {
+            return;
+          }
+          const date = new Date(value);
+          if (Number.isNaN(date.getTime())) {
+            return;
+          }
+          item.textContent = formatLocalDateTime(date);
+        });
+      }
+
       const confirmModal = document.getElementById('confirm-modal');
       const confirmMessage = document.getElementById('confirm-modal-message');
       const confirmButton = document.getElementById('confirm-modal-confirm');
@@ -475,15 +503,20 @@
       document.addEventListener('DOMContentLoaded', refreshIcons);
       document.addEventListener('DOMContentLoaded', window.initDriveBrowser);
       document.addEventListener('DOMContentLoaded', initShareControls);
+      document.addEventListener('DOMContentLoaded', function () {
+        initLocalDateTimes(document);
+      });
       document.body.addEventListener('htmx:afterSwap', function () {
         refreshIcons();
         window.initDriveBrowser();
         initShareControls();
+        initLocalDateTimes(document);
       });
       document.body.addEventListener('htmx:oobAfterSwap', function () {
         refreshIcons();
         window.initDriveBrowser();
         initShareControls();
+        initLocalDateTimes(document);
       });
       window.setInterval(updateShareCountdowns, 30000);
     })();

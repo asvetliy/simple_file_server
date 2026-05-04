@@ -8,7 +8,10 @@
         {{ file.old_file_name }}
       </h2>
       <div class="mt-2 space-y-1 text-sm text-base-content/60">
-        <p>{% blocktrans with hours=share_expire_hours expires=share.expires_at|date:"Y-m-d H:i" %}This link expires in {{ hours }} hour(s), on {{ expires }}.{% endblocktrans %}</p>
+        <p>
+          {% blocktrans with hours=share_expire_hours %}This link expires in {{ hours }} hour(s), on{% endblocktrans %}
+          <time datetime="{{ share.expires_at|local_iso }}" data-local-datetime>{{ share.expires_at|local_datetime }}</time>.
+        </p>
         {% if reissued %}
           <p class="text-success">{% trans 'A fresh share link was issued.' %}</p>
         {% else %}
