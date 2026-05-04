@@ -1,13 +1,14 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
+from unfold.admin import ModelAdmin
 
 from .formaters import HumanBytes
 from .models import File, FileShare, Folder, StorageQuote
 
 
 @admin.register(StorageQuote)
-class StorageQuoteAdmin(admin.ModelAdmin):
+class StorageQuoteAdmin(ModelAdmin):
     list_display = ('name', 'quota_display', 'users_count', 'is_default', 'created_at',)
     search_fields = ('name',)
     list_filter = ('is_default',)
@@ -26,7 +27,7 @@ class StorageQuoteAdmin(admin.ModelAdmin):
 
 
 @admin.register(Folder)
-class FolderAdmin(admin.ModelAdmin):
+class FolderAdmin(ModelAdmin):
     list_display = ('id', 'name', 'user_username', 'parent', 'created_at',)
     autocomplete_fields = ('user', 'parent',)
     search_fields = ('name', 'user__username',)
@@ -41,7 +42,7 @@ class FolderAdmin(admin.ModelAdmin):
 
 
 @admin.register(File)
-class UserAccountsAdmin(admin.ModelAdmin):
+class UserAccountsAdmin(ModelAdmin):
     list_display = ('id', 'user_username', 'folder', 'old_file_name', 'file', 'created_at', )
     autocomplete_fields = ('user', 'folder', )
     search_fields = ('user__username', 'old_file_name', 'id', )
@@ -56,7 +57,7 @@ class UserAccountsAdmin(admin.ModelAdmin):
 
 
 @admin.register(FileShare)
-class FileShareAdmin(admin.ModelAdmin):
+class FileShareAdmin(ModelAdmin):
     list_display = ('id', 'file', 'created_by', 'created_at', 'expires_at', 'is_expired',)
     autocomplete_fields = ('file', 'created_by',)
     search_fields = ('token', 'file__old_file_name', 'created_by__username',)

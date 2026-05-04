@@ -1,18 +1,18 @@
 from datetime import timedelta
 
-from django.contrib import messages
-from django.shortcuts import get_object_or_404, render
-from django.views import View
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.utils.translation import gettext_lazy as _
-from django.http import HttpResponse, JsonResponse, FileResponse
 from django.conf import settings
-from django.utils import timezone
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
+from django.http import JsonResponse, FileResponse
+from django.shortcuts import get_object_or_404, render
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from django.views import View
 
-from .models import File, FileShare, Folder
 from .forms import FileUploadForm, FolderCreateForm, ItemMoveForm, ItemRenameForm
 from .json_serializers import FileQuerySetJSONEncoder
+from .models import File, FileShare, Folder
 
 
 def get_folder_id(request):
