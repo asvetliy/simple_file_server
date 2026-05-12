@@ -30,12 +30,12 @@ class UserSignupView(View):
 
     def post(self, request):
         if request.user.is_authenticated:
-            return redirect('files-index')
+            return redirect('files-dashboard')
         form = UserSignupForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('files-index')
+            return redirect('files-dashboard')
         template_name = 'users/partials/signup_form.html' if request.headers.get('HX-Request') else 'users/signup.html'
         return render(request, template_name, {
             'form': form,

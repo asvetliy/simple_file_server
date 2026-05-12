@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM python:3.14-slim
 
 RUN groupadd pygroup && useradd -m -g pygroup -s /bin/bash pyuser
 RUN mkdir -p /home/pyuser/app
